@@ -13,5 +13,7 @@
         public IEnumerable<Alert> Alerts { get; set; }
 
         public IEnumerable<ScheduleItem> ScheduleItems { get; set; }
+
+        public string RunningLocation { get; set; }
     }
 }

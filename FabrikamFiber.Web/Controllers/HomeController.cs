@@ -4,14 +4,14 @@
 
     using FabrikamFiber.DAL.Data;
     using FabrikamFiber.Web.ViewModels;
-
+    using System.Configuration;
     public class HomeController : Controller
     {
         private readonly IServiceTicketRepository serviceTickets;
         private readonly IMessageRepository messageRepository;
         private readonly IAlertRepository alertRepository;
         private readonly IScheduleItemRepository scheduleItemRepository;
-
+        
         public HomeController(
                               IServiceTicketRepository serviceTickets,
                               IMessageRepository messageRepository,
@@ -28,6 +28,7 @@
         {
             var viewModel = new DashboardViewModel
             {
+                RunningLocation = ConfigurationManager.AppSettings["Location"],
                 ScheduleItems = this.scheduleItemRepository.All,
                 Messages = this.messageRepository.All,
                 Alerts = this.alertRepository.All,
