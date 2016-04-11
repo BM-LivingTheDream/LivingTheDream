@@ -1,10 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.Web", "FabrikamFiber.Web\FabrikamFiber.Web.csproj", "{456D6BF0-21B0-4995-9D77-76FA13AD95DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.DAL", "FabrikamFiber.DAL\FabrikamFiber.DAL.csproj", "{64058BA2-30B8-4A35-8D4C-CB4F6D6D7442}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FabrikamFiber.Database", "FabrikamFiber.Database\FabrikamFiber.Database.sqlproj", "{7B83FF4E-C1BA-48DF-A83A-96110088E10C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,12 @@ Global
 		{64058BA2-30B8-4A35-8D4C-CB4F6D6D7442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64058BA2-30B8-4A35-8D4C-CB4F6D6D7442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64058BA2-30B8-4A35-8D4C-CB4F6D6D7442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
