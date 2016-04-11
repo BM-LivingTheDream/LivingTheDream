@@ -4,7 +4,7 @@ namespace FabrikamFiber.Web.Controllers
 
     using DAL.Data;
     using DAL.Models;
-
+    using System;
     public class CustomersController : Controller
     {
         private readonly ICustomerRepository customerRepository;
@@ -33,13 +33,20 @@ namespace FabrikamFiber.Web.Controllers
         public ActionResult Create(Customer customer)
         {
             //check model state
-            if (ModelState.IsValid)
+            if (customer != null)
             {
-                this.customerRepository.InsertOrUpdate(customer);
-                this.customerRepository.Save();
-                return RedirectToAction("Index");
+
+                if (ModelState.IsValid)
+                {
+                    this.customerRepository.InsertOrUpdate(customer);
+                    this.customerRepository.Save();
+                    return RedirectToAction("Index");
+                }
             }
-            
+            else
+            {
+                throw new ArgumentNullException();
+            }
             return this.View();
         }
 

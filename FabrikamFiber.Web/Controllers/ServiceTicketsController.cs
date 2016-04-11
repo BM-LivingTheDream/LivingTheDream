@@ -55,6 +55,10 @@ namespace FabrikamFiber.Web.Controllers
 
         public ViewResult Schedule(int serviceTicketId, int employeeId, float startTime)
         {
+
+            var a = this.serviceTicketRepository.FindIncluding(serviceTicketId, serviceticket => serviceticket.Customer, serviceticket => serviceticket.CreatedBy, serviceticket => serviceticket.AssignedTo);
+
+
             var viewModel = new ScheduleViewModel
             {
                 ServiceTicket = this.serviceTicketRepository.FindIncluding(serviceTicketId, serviceticket => serviceticket.Customer, serviceticket => serviceticket.CreatedBy, serviceticket => serviceticket.AssignedTo),

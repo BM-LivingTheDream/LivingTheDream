@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.DAL", "Fabrik
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FabrikamFiber.Database", "FabrikamFiber.Database\FabrikamFiber.Database.sqlproj", "{7B83FF4E-C1BA-48DF-A83A-96110088E10C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.Web.UnitTests", "FabrikamFiber.Web.UnitTests\FabrikamFiber.Web.UnitTests.csproj", "{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B83FF4E-C1BA-48DF-A83A-96110088E10C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
