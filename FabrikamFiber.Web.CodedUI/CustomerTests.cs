@@ -16,26 +16,45 @@ namespace FabrikamFiber.Web.CodedUI
     /// Summary description for CodedUITest1
     /// </summary>
     [CodedUITest]
-    public class CodedUITest1
+    public class CustomerTests
     {
-        public CodedUITest1()
+        public CustomerTests()
         {
         }
 
         [TestMethod]
-        public void CodedUITestMethod1()
+        public void AddCustomer()
         {
-            using (
-                 var bw = BrowserWindow.Launch(new Uri("http://localhost:16535/"))
-                 )
+            using (var bw = BrowserWindow.Launch(Helper.WebUrl))
             {
-                FindAndClickLink(bw , "Customers");
-                FindAndClickLink(bw,  "Create New");
+                FindAndClickLink(bw, "Customers");
+                var oldRowCount = FindTableRowCount(bw, "dataTable");
+
+                FindAndClickLink(bw, "Create New");
                 FindAndTypeInTextBox(bw, "FirstName", "Fred");
                 FindAndTypeInTextBox(bw, "LastName", "Bloggs");
+                FindAndTypeInTextBox(bw, "Address.Street", "1 The Road");
+                FindAndTypeInTextBox(bw, "Address.City", "Townsville");
+                FindAndTypeInTextBox(bw, "Address.State", "Countyshire");
+                FindAndTypeInTextBox(bw, "Address.Zip", "12345");
+                FindAndClickButton(bw, "Create");
+
+                var newRowCount = FindTableRowCount(bw, "dataTable");
+
+                Assert.IsTrue(newRowCount - oldRowCount == 1);
+          
             }
 
         }
+
+        private int FindTableRowCount(BrowserWindow bw, string name)
+        {
+            var table = new HtmlTable(bw);
+            table.SearchProperties.Add(HtmlTable.PropertyNames.Class, name);
+            table.FindMatchingControls();
+            return table.RowCount;
+        }
+
 
         private void FindAndClickLink(BrowserWindow bw, string innerText)
         {
@@ -46,7 +65,15 @@ namespace FabrikamFiber.Web.CodedUI
             Mouse.Click(link);
         }
 
-        private void FindAndTypeInTextBox(BrowserWindow bw, string name , string text)
+        private void FindAndClickButton(BrowserWindow bw, string value)
+        {
+            var button = new HtmlInputButton(bw);
+            button.SearchProperties.Add(HtmlInputButton.PropertyNames.ValueAttribute, value);
+            button.FindMatchingControls();
+            Mouse.Click(button);
+        }
+
+        private void FindAndTypeInTextBox(BrowserWindow bw, string name, string text)
         {
             var field = new HtmlEdit(bw);
             field.SearchProperties.Add(HtmlEdit.PropertyNames.Name, name);
