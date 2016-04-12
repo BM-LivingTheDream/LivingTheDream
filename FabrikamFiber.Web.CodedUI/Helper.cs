@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,12 @@ namespace FabrikamFiber.Web.CodedUI
         {
             get
             {
-                return new Uri("http://localhost:16535/");
+                var baseuri = ConfigurationManager.AppSettings["weburi"];
+                if (baseuri == null)
+                {
+                    throw new NullReferenceException("No baseuri definded");
+                }
+                return new Uri(baseuri);
             }
         }
     }
