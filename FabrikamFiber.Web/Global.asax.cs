@@ -3,6 +3,7 @@
     using System.Data.Entity;
     using System.Web.Mvc;
     using System.Web.Routing;
+    using System.Web.Http;
 
     using FabrikamFiber.DAL.Data;
 
@@ -31,6 +32,8 @@
 
         protected void Application_Start()
         {
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
             Database.SetInitializer<FabrikamFiberWebContext>(new FabrikamFiberDatabaseInitializer());
 
             AreaRegistration.RegisterAllAreas();
