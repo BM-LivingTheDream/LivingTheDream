@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.Web.Integrati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{56F9030A-41EB-48F5-BC09-B43B5EA418EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrikamFiber.Web.SeleniumTests", "FabrikamFiber.Web.SeleniumTests\FabrikamFiber.Web.SeleniumTests.csproj", "{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{6C150831-842D-41D3-B177-ED39CBD07D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C150831-842D-41D3-B177-ED39CBD07D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C150831-842D-41D3-B177-ED39CBD07D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +62,6 @@ Global
 		{BE5B2DA7-A4C3-45F3-B8CF-AC224320FAA5} = {56F9030A-41EB-48F5-BC09-B43B5EA418EB}
 		{8876A0E7-620C-4A7A-A8AA-D7905F1557B5} = {56F9030A-41EB-48F5-BC09-B43B5EA418EB}
 		{6C150831-842D-41D3-B177-ED39CBD07D52} = {56F9030A-41EB-48F5-BC09-B43B5EA418EB}
+		{CCFBFC5E-BA0C-41E1-BD23-B6DF8B933708} = {56F9030A-41EB-48F5-BC09-B43B5EA418EB}
 	EndGlobalSection
 EndGlobal
