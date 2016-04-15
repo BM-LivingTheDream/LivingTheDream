@@ -11,7 +11,7 @@ namespace FabrikamFiber.Web.SeleniumTests
     public class CustomerTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void AddCustomer()
         {
             using (var driver = new PhantomJSDriver())
             {
@@ -20,7 +20,7 @@ namespace FabrikamFiber.Web.SeleniumTests
                 page.FindLink("Customers").Click();
 
                 int oldRowCount = page.TableRowCount("dataTable");
-                Console.Write(oldRowCount);
+
                 page.FindLink("Create New").Click();
                 page.FindTextBox("FirstName").SendKeys("Fred");
                 page.FindTextBox("LastName").SendKeys("Bloggs");
