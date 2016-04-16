@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.PhantomJS;
-
+using System.Drawing;
 
 namespace FabrikamFiber.Web.SeleniumTests
 {
@@ -16,7 +16,9 @@ namespace FabrikamFiber.Web.SeleniumTests
             using (var driver = new PhantomJSDriver())
             {
                 var page = new SeleniumPage(driver);
+
                 page.GoTo(Helper.WebUrl.ToString());
+
                 page.FindLink("Customers").Click();
 
                 int oldRowCount = page.TableRowCount("dataTable");

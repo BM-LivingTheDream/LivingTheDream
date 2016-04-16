@@ -9,7 +9,6 @@ namespace FabrikamFiber.Web.SeleniumTests
 {
     public class SeleniumPage 
     {
-        public static readonly string Url = "http://localhost:16535/";
         public IWebDriver Driver { get; }
 
         public SeleniumPage(IWebDriver driver)
@@ -19,7 +18,7 @@ namespace FabrikamFiber.Web.SeleniumTests
 
         public SeleniumPage GoTo(string url)
         {
-            this.Driver.Navigate().GoToUrl(Url);
+            this.Driver.Navigate().GoToUrl(url);
             return this;
         }
 
