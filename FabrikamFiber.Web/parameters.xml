@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter defaultvalue="__LOCATION__" description="Description for Location" name="Location" tags="">
+  <parameter defaultValue="__LOCATION__" description="Description for Location" name="Location" tags="">
     <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='Location']/@value" scope="\\web.config$" />
   </parameter>
+
+  <parameter name="Database Server" defaultValue="__sqlservername__"></parameter>
+  <parameter name="Database Name" defaultValue="__databasename__"></parameter>
+  <parameter name="Database User" defaultValue="__SQLUser__"></parameter>
+  <parameter name="Database Password" defaultValue="__SQLPassword__"></parameter>
+  
 </parameters>

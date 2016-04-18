@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="__Sitename__" />
+  <setParameter name="Location" value="__LOCATION__" />
+  <setParameter name="Database Server" value="__sqlservername__" />
+  <setParameter name="Database Name" value="__databasename__" />
+  <setParameter name="Database User" value="__SQLUser__" />
+  <setParameter name="Database Password" value="__SQLPassword__" />
+</parameters>
