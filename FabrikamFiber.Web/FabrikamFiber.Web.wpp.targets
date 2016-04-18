@@ -9,7 +9,7 @@
         <Scope>Web.config</Scope>
         <Match>/configuration/connectionStrings/add[@name='FabrikamFiber-Express']/@connectionString</Match>
         <Description>Enter the value for FabrikamFiber-Express connection string</Description>
-        <DefaultValue>Server=tcp:{Database Server}.database.windows.net,1433;Database={Database Name};User ID={Database User}@{Database Name};Password={Database Password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</DefaultValue>
+        <DefaultValue>Server=tcp:{Database Server}.database.windows.net,1433;Database={Database Name};User ID={Database User}@{Database Server};Password={Database Password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</DefaultValue>
         <Tags></Tags>
         <ExcludeFromSetParameter>True</ExcludeFromSetParameter>
       </MsDeployDeclareParameters>
