@@ -4,6 +4,10 @@
     <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='Location']/@value" scope="\\web.config$" />
   </parameter>
 
+  <parameter defaultValue="__GENERATETESTDATA__" description="Description for GENERATETESTDATA" name="GENERATETESTDATA" tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='GENERATETESTDATA']/@value" scope="\\web.config$" />
+  </parameter>
+
   <parameter name="Database Server" defaultValue="__sqlservername__"></parameter>
   <parameter name="Database Name" defaultValue="__databasename__"></parameter>
   <parameter name="Database User" defaultValue="__SQLUser__"></parameter>
