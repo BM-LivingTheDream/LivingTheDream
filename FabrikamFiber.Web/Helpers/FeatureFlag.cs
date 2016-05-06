@@ -12,7 +12,7 @@ namespace FabrikamFiber.Web.Helpers
 
         public static bool IsFlagSet(string flag)
         {
-            var retValue = false;C:\projects\vsts\Fabrikam\FabrikamFiber.Web\Helpers\FeatureFlag.cs
+            var retValue = false;
             if (string.IsNullOrEmpty(flag) == false)
             {
                 try
