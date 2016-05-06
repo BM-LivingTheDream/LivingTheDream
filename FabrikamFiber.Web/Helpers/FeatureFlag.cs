@@ -5,13 +5,14 @@ using System.Web;
 
 namespace FabrikamFiber.Web.Helpers
 {
+    // added to aid the demo
     public class FeatureFlag
     {
         public const string GENERATETESTDATA = "GENERATETESTDATA";
 
         public static bool IsFlagSet(string flag)
         {
-            var retValue = false;
+            var retValue = false;C:\projects\vsts\Fabrikam\FabrikamFiber.Web\Helpers\FeatureFlag.cs
             if (string.IsNullOrEmpty(flag) == false)
             {
                 try
