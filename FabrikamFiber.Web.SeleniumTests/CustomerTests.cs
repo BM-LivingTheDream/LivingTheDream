@@ -15,6 +15,7 @@ namespace FabrikamFiber.Web.SeleniumTests
         {
             using (var driver = new PhantomJSDriver())
             {
+                // the file to check in
                 var page = new SeleniumPage(driver);
 
                 page.GoTo(Helper.WebUrl.ToString());
