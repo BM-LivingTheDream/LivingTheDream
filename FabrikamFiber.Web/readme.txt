@@ -1,4 +1,4 @@
-﻿Read me notes
+﻿Readme notes
 
 In order to use the Intranet template, you'll need to enable Windows Authentication
 and disable Anonymous Authentication.
