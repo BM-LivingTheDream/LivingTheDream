@@ -13,7 +13,7 @@ namespace FabrikamFiber.Web.SeleniumTests
         [TestMethod]
         public void AddCustomer()
         {
-            using (var driver = new PhantomJSDriver())
+            using (var driver = Helper.GetWebDriver())
             {
                 // the file to check in
                 var page = new SeleniumPage(driver);

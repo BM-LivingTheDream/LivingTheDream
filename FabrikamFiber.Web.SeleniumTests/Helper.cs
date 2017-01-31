@@ -4,22 +4,50 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.PhantomJS;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.IE;
 
 namespace FabrikamFiber.Web.SeleniumTests
 {
-    public class Helper
+    internal class Helper
     {
-       public static Uri WebUrl
+        internal static Uri WebUrl
         {
             get
             {
-                var baseuri = ConfigurationManager.AppSettings["weburi"];
-                if (baseuri == null)
-                {
-                    throw new NullReferenceException("No baseuri definded");
-                }
-                return new Uri(baseuri);
+                return new Uri(GetWebConfigSetting("weburi"));
             }
+        }
+
+        internal static IWebDriver GetWebDriver()
+        {
+            var driverName = GetWebConfigSetting("webdriver");
+            switch (driverName)
+            {
+                case "PhantomJS":
+                    return new PhantomJSDriver();
+                case "Chrome":
+                    return new ChromeDriver();
+                case "Firefox":
+                    return new FirefoxDriver();
+                case "IE":
+                    return new InternetExplorerDriver();
+                default:
+                    throw new ConfigurationErrorsException($"{driverName} is not a know Selenium WebDriver");
+            }
+        }
+
+        private static string GetWebConfigSetting(string name)
+        {
+            var value = ConfigurationManager.AppSettings[name];
+            if (value == null)
+            {
+                throw new ConfigurationErrorsException($"No AppSettings {name} defined");
+            }
+            return value;
         }
     }
 }
