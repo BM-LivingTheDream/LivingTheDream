@@ -1,4 +1,5 @@
 ﻿Readme notes edited for demo on 20th Jan
+This is another edits
 
 In order to use the Intranet template, you'll need to enable Windows Authentication
 and disable Anonymous Authentication.
