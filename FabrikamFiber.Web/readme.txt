@@ -1,8 +1,10 @@
 ﻿Readme notes edited for demo on 20th Jan
-This is another edits
+This is another edit.
 
 In order to use the Intranet template, you'll need to enable Windows Authentication
 and disable Anonymous Authentication.
+
+Here is a change.
 
 For detailed instructions (including instructions for IIS 6.0), please visit
 http://go.microsoft.com/fwlink/?LinkID=213745
