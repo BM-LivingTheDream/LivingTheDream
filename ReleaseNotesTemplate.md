@@ -16,7 +16,7 @@
 | Type | ID | Assigned To | Title |
 | --- | --- | --- | --- |
 @@WILOOP@@
-| ${widetail.fields['System.WorkItemType']} |${widetail.id} | ${widetail.fields['System.AssignedTo']} | ${widetail.fields['System.Title']} |
+| ${widetail.fields['System.WorkItemType']} | ${widetail.id} | ${widetail.fields['System.AssignedTo']} | ${widetail.fields['System.Title']} |
 @@WILOOP@@
 
 ### Associated commits
