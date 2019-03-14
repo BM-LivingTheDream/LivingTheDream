@@ -1,7 +1,7 @@
 [[_TOC_]]
 
 # Release Notes
-[Link to release ${releaseDetails.name}](${releaseDetails.release._links.web.href})
+[Link to release ${releaseDetails.name}](${releaseDetails._links.web.href})
 [Link to artefact ${releaseDetails.artifacts[0].alias}](${releaseDetails.artifacts[0].definitionReference.artifactSourceVersionUrl})
 [Link to artefact ${releaseDetails.artifacts[1].alias}](${releaseDetails.artifacts[1].definitionReference.artifactSourceVersionUrl})
 
