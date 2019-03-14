@@ -1,50 +1,16 @@
 [[_TOC_]]
 
 # Release Notes
+[Link to release ${releaseDetails.name}](${releaseDetails.release._links.web.href})
+[Link to artefact ${releaseDetails.artifacts[0].alias}](${releaseDetails.artifacts[0].definitionReference.artifactSourceVersionUrl})
+[Link to artefact ${releaseDetails.artifacts[1].alias}](${releaseDetails.artifacts[1].definitionReference.artifactSourceVersionUrl})
 
-|         | RELEASE | BUILD |
-|---------|---------|-------|
-| Definition Name | ${releaseDetails.releaseDefinition.name} | ${releaseDetails.artifacts[0].definitionReference.definition.name} |
-| Definition ID | ${releaseDetails.releaseDefinition.id} | ${releaseDetails.artifacts[0].definitionReference.definition.id} |
-| Current Name | ${releaseDetails.name} |  ${releaseDetails.artifacts[0].definitionReference.version.name} |
-| URL | ${releaseDetails._links.web.href} | ${releaseDetails.artifacts[0].definitionReference.artifactSourceVersionUrl.id} |
-| Completed | ${releaseDetails.modifiedOn} | N/A |
-| Compared with | ${compareReleaseDetails.name} | N/A |
-| Source Branch | N/A | ${releaseDetails.artifacts[0].definitionReference.branch.name} |
+| --- | --- |
+| Date of release | ${releaseDetails.artifacts[1].CreatedOn} |
+| Release Definition | [${releaseDetails.releaseDefinition.name}](${releaseDetails.releaseDefinition._links.web.href}) |
+| ${releaseDetails.artifacts[0].alias} Version | ${releaseDetails.artifacts[0].definitionReference.version.name} |
+| ${releaseDetails.artifacts[1].alias} Version | ${releaseDetails.artifacts[1].definitionReference.version.name} |
 
-## Technical Description
-@@WILOOP:Release Notes:RN-TECH-SUMMARY@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-TECH-SUMMARY@@
-
-## Business Description
-@@WILOOP:Release Notes:RN-BUSINESS-BLURB@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-BUSINESS-BLURB@@
-
-## Dependencies
-@@WILOOP:Release Notes:RN-DEPENDENCIES@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-DEPENDENCIES@@
-
-## Known Issues
-@@WILOOP:Release Notes:RN-KNOWN-ISSUES@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-KNOWN-ISSUES@@
-
-## Technical Debt
-@@WILOOP:Release Notes:RN-TECH-DEBT@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-TECH-DEBT@@
-
-## Fallback Plan
-@@WILOOP:Release Notes:RN-FALLBACK-PLAN@@
-${widetail.fields['System.Description']}
-@@WILOOP:Release Notes:RN-FALLBACK-PLAN@@
-
----
-
-## Associated Artifacts
 
 ### Associated work items
 @@WILOOP@@
