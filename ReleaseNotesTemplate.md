@@ -1,10 +1,14 @@
 [[_TOC_]]
 
 # Release Notes
+## Links to Release and Artefacts
 [Link to release ${releaseDetails.name}](${releaseDetails._links.web.href})
 [Link to artefact ${releaseDetails.artifacts[0].alias}](${releaseDetails.artifacts[0].definitionReference.artifactSourceVersionUrl.id})
 [Link to artefact ${releaseDetails.artifacts[1].alias}](${releaseDetails.artifacts[1].definitionReference.artifactSourceVersionUrl.id})
 
+## Release Details
+
+| | Details |
 | --- | --- |
 | Date of release | ${releaseDetails.createdOn} |
 | Release Definition | [${releaseDetails.releaseDefinition.name}](${releaseDetails.releaseDefinition._links.web.href}) |
