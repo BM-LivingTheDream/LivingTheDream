@@ -13,11 +13,15 @@
 
 
 ### Associated work items
+| Type | ID | Assigned To | Title |
+| --- | --- | --- | --- |
 @@WILOOP@@
-* #${widetail.id}
+| ${widetail.fields['System.WorkItemType']} |${widetail.id} | ${widetail.fields['System.AssignedTo']} | ${widetail.fields['System.Title']} |
 @@WILOOP@@
 
 ### Associated commits
+| Commit ID | Comment |
+| --- | --- |
 @@CSLOOP@@
-* **ID ${csdetail.id} ** ${csdetail.message}
+| ${csdetail.commitId} | ${csdetail.comment} |
 @@CSLOOP@@
