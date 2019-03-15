@@ -27,5 +27,5 @@
 | Commit ID | Comment |
 | --- | --- |
 @@CSLOOP@@
-| ${csdetail.commitId} | ${csdetail.comment} |
+| ${csdetail.id} | ${csdetail.message}
 @@CSLOOP@@
