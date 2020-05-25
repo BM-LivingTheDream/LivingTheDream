@@ -50,6 +50,14 @@ steps:
     OutputVersion: 'OutputedVersion'
     VersionNumber: '$(versionNumber)'
 
+- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@2
+  displayName: 'Version Dacpac files'
+  inputs:
+    ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
+    Path: '$(Build.SourcesDirectory)'
+    VersionNumber: '$(versionNumber)'
+    InjectVersion: true
+    OutputVersion: 'OutputedVersion'
 
 - task: VSBuild@1
   displayName: 'Build Solutions'
@@ -58,11 +66,6 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true;PublishProfile=Release'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@1
-  displayName: 'Version Dacpac files'
-  inputs:
-    ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
 
 - task: VSTest@2
   displayName: 'Test Assemblies'
