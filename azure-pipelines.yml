@@ -3,16 +3,22 @@
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
-trigger:
-- master
+#trigger:
+#- master
 
 pool:
   vmImage: 'windows-latest'
+
+name: '$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)_$(Rev:.r)'
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  version.Major: '1'
+  version.Minor: '52'
+  version.Revision: $[counter(variables['version.Minor'], 0)]
+  versionNumber: '$(version.Major).$(version.Minor).$(version.Revision)'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -24,6 +30,11 @@ steps:
 
 - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
   displayName: 'Version Assemblies'
+  inputs:
+    InjectVersion: true
+    FilenamePattern: 'AssemblyInfo.*'
+    OutputVersion: 'OutputedVersion'
+
 
 - task: VSBuild@1
   displayName: 'Build Solutions'
