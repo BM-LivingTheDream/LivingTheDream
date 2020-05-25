@@ -83,7 +83,7 @@ steps:
     runInParallel: false
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testAssembly: '**\$(BuildConfiguration)\*.unittests.dll;-:**\obj\**'
+    testAssemblyVer2: '**\$(BuildConfiguration)\*.unittests.dll;-:**\obj\**'
     codeCoverageEnabled: true
 
 - task: PublishSymbols@1
