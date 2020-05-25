@@ -83,7 +83,7 @@ steps:
     runInParallel: false
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testAssemblyVer2: '**\$(BuildConfiguration)\*.unittests.dll;-:**\obj\**'
+    testAssemblyVer2: '**\$(buildConfiguration)\*.unittests.dll;-:**\obj\**'
     codeCoverageEnabled: true
     searchFolder: '$(System.DefaultWorkingDirectory)'
 
