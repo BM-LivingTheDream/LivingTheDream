@@ -1,0 +1,39 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostingPlanName": {
+      "value": "FabrikamHP"
+    },
+    "hostingPlanSku": {
+      "value": "F1"
+    },
+    "hostingPlanCapacity": {
+      "value": 1
+    },
+    "webSiteName": {
+      "value": "FabrikamWeb"
+    },
+    "sqlserverName": {
+      "value": "fabrikamsql"
+    },
+    "databaseName": {
+      "value": "FabrikamDB1"
+    },
+    "collation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "edition": {
+      "value": "Standard"
+    },
+    "maxSizeBytes": {
+      "value": "1073741824"
+    },
+    "requestedServiceObjectiveName": {
+      "value": "S0"
+    },
+    "appInsightsLocation": {
+      "value":  "NorthEurope"
+    }
+  }
+}
