@@ -59,6 +59,16 @@ steps:
     InjectVersion: true
     OutputVersion: 'OutputedVersion'
 
+- task: richardfennellBM.BM-VSTS-Versioning-Task.Version-JSONFile-Task.VersionJSONFile@2
+  displayName: 'Version ARM Templates'
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    InjectVersion: true
+    OutputVersion: 'OutputedVersion'
+    VersionNumber: '$(versionNumber)'
+    FilenamePattern: azuredeploy.json
+    Field: contentVersion
+
 - task: VSBuild@1
   displayName: 'Build Solutions'
   inputs:
