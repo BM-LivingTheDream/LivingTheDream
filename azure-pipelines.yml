@@ -85,6 +85,7 @@ steps:
     configuration: '$(buildConfiguration)'
     testAssemblyVer2: '**\$(BuildConfiguration)\*.unittests.dll;-:**\obj\**'
     codeCoverageEnabled: true
+    searchFolder: '$(System.DefaultWorkingDirectory)'
 
 - task: PublishSymbols@1
   displayName: 'Publish symbols'
