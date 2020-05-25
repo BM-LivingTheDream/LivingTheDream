@@ -12,6 +12,7 @@ pool:
 name: '$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)_$(Rev:.r)'
 
 variables:
+  System.Debug: true
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
