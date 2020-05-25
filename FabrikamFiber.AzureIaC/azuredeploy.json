@@ -108,6 +108,27 @@
       "metadata": {
         "description":  "AppInsights instance location (limited to specific regions)"
       }
+    },
+    "VersionTag": {
+      "type": "string",
+      "defaultValue": "1-0-0-0",
+      "metadata": {
+        "description": "Build version for Resource Tag"
+      }
+    },
+    "DeploymentDate": {
+      "type": "string",
+      "defaultValue": "1900-01-01",
+      "metadata": {
+        "description": "Date for resource tag"
+      }
+    },
+    "EnvironmentTag": {
+      "type": "string",
+      "defaultValue": "dev",
+      "metadata": {
+        "description": "Environment Purpose"
+      }
     }
   },
   "variables": {
