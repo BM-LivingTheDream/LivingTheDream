@@ -19,7 +19,7 @@ variables:
   version.Major: '1'
   version.Minor: '52'
   #version.Revision: $[counter(variables['version.Minor'], 0)]
-  versionNumber: '$(version.Major).$(version.Minor).$(year:yy)$(dayofyear).$(rev:r)'
+  versionNumber: '$(version.Major).$(version.Minor).$(Date:yy)$(DayOfYear).$(Rev:.r)'
 
 steps:
 - task: NuGetToolInstaller@1
