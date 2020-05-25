@@ -89,6 +89,7 @@ steps:
       !**\\obj\\**
     codeCoverageEnabled: true
     searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Test Assemblies'
 
 - task: OWASPDependencyCheck@0
   inputs:
