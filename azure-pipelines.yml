@@ -32,9 +32,11 @@ steps:
 - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
   displayName: 'Version Assemblies'
   inputs:
+    Path: '$(Build.SourcesDirectory)'
     InjectVersion: true
     FilenamePattern: 'AssemblyInfo.*'
     OutputVersion: 'OutputedVersion'
+    VersionNumber: '$(versionNumber)'
 
 
 - task: VSBuild@1
