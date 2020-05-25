@@ -97,6 +97,14 @@ steps:
     outputFormat: 'ALL'
     useSonarQubeIntegration: false    
 
+- task: PublishTestResults@2
+  displayName: 'Publish OWASP Results'
+  inputs:
+    testResultsFormat: JUnit
+    testResultsFiles: 'dependency-check\*junit.xml'
+    searchFolder: '$(Common.TestResultsDirectory)'
+    testRunTitle: 'Dependency Check'
+
 - task: PublishSymbols@1
   displayName: 'Publish symbols'
   inputs:
