@@ -80,7 +80,6 @@ steps:
 - task: VSTest@2
   displayName: 'Test Assemblies'
   inputs:
-    vsTestVersion: 14.0
     runInParallel: false
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
