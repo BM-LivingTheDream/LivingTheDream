@@ -19,8 +19,7 @@ variables:
   version.Major: '1'
   version.Minor: '52'
   version.Third: '$(format('{0:yy}', pipeline.startTime)'
-  version.Counter: $[counter(format('{0:yyyyMMdd}', pipeline.startTime), 0)]
-  #version.Revision: $[counter(variables['version.Minor'], 0)]
+  version.Counter: '$[counter(format('{0:yyyyMMdd}', pipeline.startTime), 0)]'
   versionNumber: '$(version.Major).$(version.Minor).$(version.Third).$(version.Counter)'
 
 steps:
