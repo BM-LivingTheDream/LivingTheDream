@@ -113,6 +113,7 @@ steps:
      **\*.seleniumtests\bin\$(BuildConfiguration)\**
      **\_publish\**
      **\*.dacpac
+     **\azuredeploy*.json
      **\ReleaseNotesTemplate.md
     TargetFolder: '$(build.artifactstagingdirectory)'
 
