@@ -17,8 +17,8 @@ variables:
   buildConfiguration: 'Release'
   version.Major: '1'
   version.Minor: '52'
-  version.Revision: $[counter(variables['version.Minor'], 0)]
-  versionNumber: '$(version.Major).$(version.Minor).$(version.Revision)'
+  #version.Revision: $[counter(variables['version.Minor'], 0)]
+  versionNumber: '$(version.Major).$(version.Minor).$(year:yy)$(dayofyear).$(rev:r)'
 
 steps:
 - task: NuGetToolInstaller@1
