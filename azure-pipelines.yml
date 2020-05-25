@@ -69,13 +69,6 @@ steps:
     FilenamePattern: azuredeploy.json
     Field: contentVersion
 
-- task: OWASPDependencyCheck@0
-  inputs:
-    outputDirectory: '$(Agent.TempDirectory)/dependency-scan-results'
-    scanDirectory: '$(Build.SourcesDirectory)'
-    outputFormat: 'ALL'
-    useSonarQubeIntegration: false    
-
 - task: VSBuild@1
   displayName: 'Build Solutions'
   inputs:
@@ -96,6 +89,13 @@ steps:
       !**\\obj\\**
     codeCoverageEnabled: true
     searchFolder: '$(System.DefaultWorkingDirectory)'
+
+- task: OWASPDependencyCheck@0
+  inputs:
+    outputDirectory: '$(Agent.TempDirectory)/dependency-scan-results'
+    scanDirectory: '$(Build.SourcesDirectory)'
+    outputFormat: 'ALL'
+    useSonarQubeIntegration: false    
 
 - task: PublishSymbols@1
   displayName: 'Publish symbols'
