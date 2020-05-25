@@ -84,7 +84,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     testAssemblyVer2: |
-      **\$(buildConfiguration)\*.unittests.dll;
+      **\$(buildConfiguration)\*.UnitTests.dll;
       -:**\obj\**
     codeCoverageEnabled: true
     searchFolder: '$(System.DefaultWorkingDirectory)'
