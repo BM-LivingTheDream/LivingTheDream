@@ -29,16 +29,17 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
--task: PowerShell@2
- inputs:
-  targetType: inline
-  script: |
-    $major = $env:version_Major
-    $minor = $env:version_Minor
-    $counter = $env:version_Counter
-    $build = "$(get-date -Format yy)$((get-date).dayofyear)"
-    $versionNumber = "$($major).$($minor).$($build).$($counter)"
-    write-host "##vso[task.setvariable variable=versionNumber;]$($versionNumber)"
+- task: PowerShell@2
+  displayName: 'Generate versionNumber'
+  inputs:
+    targetType: inline
+    script: |
+      $major = $env:version_Major
+      $minor = $env:version_Minor
+      $counter = $env:version_Counter
+      $build = "$(get-date -Format yy)$((get-date).dayofyear)"
+      $versionNumber = "$($major).$($minor).$($build).$($counter)"
+      write-host "##vso[task.setvariable variable=versionNumber;]$($versionNumber)"
 
 - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
   displayName: 'Version Assemblies'
