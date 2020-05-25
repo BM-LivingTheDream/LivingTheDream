@@ -59,7 +59,7 @@ steps:
     InjectVersion: true
     OutputVersion: 'OutputedVersion'
 
-- task: richardfennellBM.BM-VSTS-Versioning-Task.Version-JSONFile-Task.VersionJSONFile@2
+- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-JSONFile-Task.VersionJSONFile@2
   displayName: 'Version ARM Templates'
   inputs:
     Path: '$(Build.SourcesDirectory)'
