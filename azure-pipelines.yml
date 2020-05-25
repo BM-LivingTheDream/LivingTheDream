@@ -92,7 +92,7 @@ steps:
 
 - task: OWASPDependencyCheck@0
   inputs:
-    outputDirectory: '$(Agent.TempDirectory)/dependency-scan-results'
+    outputDirectory: '$(Common.TestResultsDirectory)/dependency-scan-results'
     scanDirectory: '$(Build.SourcesDirectory)'
     outputFormat: 'ALL'
     useSonarQubeIntegration: false    
@@ -101,7 +101,7 @@ steps:
   displayName: 'Publish OWASP Results'
   inputs:
     testResultsFormat: JUnit
-    testResultsFiles: 'dependency-check\*junit.xml'
+    testResultsFiles: '**/dependency-scan-results/*junit.xml'
     searchFolder: '$(Common.TestResultsDirectory)'
     testRunTitle: 'Dependency Check'
 
