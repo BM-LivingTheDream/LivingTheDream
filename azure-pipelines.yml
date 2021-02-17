@@ -1,0 +1,132 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+#trigger:
+#- master
+
+pool:
+  vmImage: 'windows-latest'
+
+name: '$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)_$(Rev:.r)'
+
+variables:
+  System.Debug: true
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  version.Major: '1'
+  version.Minor: '52'
+  version.Counter: $[counter(format('{0:yyyyMMdd}', pipeline.startTime), 0)]
+
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  displayName: 'NuGet Restore'
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: PowerShell@2
+  displayName: 'Generate versionNumber'
+  inputs:
+    targetType: inline
+    script: |
+      $major = $env:version_Major
+      $minor = $env:version_Minor
+      $counter = $env:version_Counter
+      $build = "$(get-date -Format yy)$((get-date).dayofyear)"
+      $versionNumber = "$($major).$($minor).$($build).$($counter)"
+      write-host "##vso[task.setvariable variable=versionNumber;]$($versionNumber)"
+
+- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
+  displayName: 'Version Assemblies'
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    InjectVersion: true
+    FilenamePattern: 'AssemblyInfo.*'
+    OutputVersion: 'OutputedVersion'
+    VersionNumber: '$(versionNumber)'
+
+- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@2
+  displayName: 'Version Dacpac files'
+  inputs:
+    ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
+    Path: '$(Build.SourcesDirectory)'
+    VersionNumber: '$(versionNumber)'
+    InjectVersion: true
+    OutputVersion: 'OutputedVersion'
+
+- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-JSONFile-Task.VersionJSONFile@2
+  displayName: 'Version ARM Templates'
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    InjectVersion: true
+    OutputVersion: 'OutputedVersion'
+    VersionNumber: '$(versionNumber)'
+    FilenamePattern: azuredeploy.json
+    Field: contentVersion
+
+- task: VSBuild@1
+  displayName: 'Build Solutions'
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true;PublishProfile=Release'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: 'Test Assemblies'
+  inputs:
+    runInParallel: false
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    testSelector: testAssemblies
+    testAssemblyVer2: |
+      **\\$(buildConfiguration)\\*.UnitTests.dll
+      !**\\obj\\**
+    codeCoverageEnabled: true
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Test Assemblies'
+
+- task: OWASPDependencyCheck@0
+  inputs:
+    outputDirectory: '$(Common.TestResultsDirectory)/dependency-scan-results'
+    scanDirectory: '$(Build.SourcesDirectory)'
+    outputFormat: 'ALL'
+    useSonarQubeIntegration: false    
+
+- task: PublishTestResults@2
+  displayName: 'Publish OWASP Results'
+  inputs:
+    testResultsFormat: JUnit
+    testResultsFiles: '**/dependency-scan-results/*junit.xml'
+    searchFolder: '$(Common.TestResultsDirectory)'
+    testRunTitle: 'Dependency Check'
+
+- task: PublishSymbols@1
+  displayName: 'Publish symbols'
+  inputs:
+    SearchPattern: '**\bin\**\*.pdb'
+  continueOnError: true
+
+- task: CopyFiles@1
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(build.sourcesdirectory)'
+    Contents: |
+     **\*.codedui\bin\$(BuildConfiguration)\**
+     **\*.integrationtests\bin\$(BuildConfiguration)\**
+     **\*.seleniumtests\bin\$(BuildConfiguration)\**
+     **\_publish\**
+     **\*.dacpac
+     **\azuredeploy*.json
+     **\ReleaseNotesTemplate.md
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
