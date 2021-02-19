@@ -1,3 +1,1 @@
-Readme file
-Update for 170
-this is a bug fix for 140
+This repo contains the demo and release notes for the 'Living the Dream' demo project  
