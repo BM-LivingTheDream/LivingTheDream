@@ -364,6 +364,12 @@ stages:
               parameters:
                 version: $(Build.BuildNumber)
                 template: '$(Pipeline.Workspace)/WIKITemplates/WIKIReleaseNotesTemplate.md'
-            #- task: richardfennellBM.BM-VSTS-BuildUpdating-Tasks.BuildRetension-Task.BuildRetensionTask@2
-            #  displayName: 'Update Build Retension'
-            
+            - task: tagBuildOrRelease@0
+              inputs:
+                type: 'Build'
+                tags: '$(build.buildnumber)'
+            - task: BuildRetensionTask@2
+              inputs:
+                mode: 'Prime'
+                keepForever: true
+                usePSCore: False
