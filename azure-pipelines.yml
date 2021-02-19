@@ -179,6 +179,11 @@ stages:
         pool:
           vmImage: 'windows-latest'
         steps:
+        - task: GitVersion@5
+          inputs:
+            versionSpec: '5.x'
+            useConfigFile: true
+            configFilePath: '$(System.DefaultWorkingDirectory)/GitVersion.yml'
         - task: XplatGenerateReleaseNotes@3
           displayName: 'Generate build release notes'
           inputs:
