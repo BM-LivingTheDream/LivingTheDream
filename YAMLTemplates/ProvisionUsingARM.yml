@@ -1,0 +1,33 @@
+parameters:
+- name: version
+  type: string
+- name: template
+  type: string 
+- name: AzureResourceGroup
+  type: string 
+
+steps:
+- powershell: |
+    $VersionTag = "${{parameters.version}}"
+    $DeploymentVersionTag = $VersionTag.Replace(".", "-")
+    if ($DeploymentVersionTag.Length -ge 26) {
+        $DeploymentVersionTag = $DeploymentVersionTag.Substring(0, 26)
+        $DeploymentVersionTag = $DeploymentVersionTag.TrimEnd("-")
+    }
+    Write-Host "##vso[task.setvariable variable=VersionTag;]$DeploymentVersionTag"
+    $DeploymentDateTag = Get-Date -Format 'yyyy-MM-dd'
+    Write-Host "##vso[task.setvariable variable=DeploymentDateTag;]$DeploymentDateTag"
+  displayName: 'Set template vars'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Azure Deployment: Create Or Update Resource Group'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Black Marble EA Dev/Test(1fa90b4c-d84e-48f4-975b-6776245c4be7)'
+    subscriptionId: '1fa90b4c-d84e-48f4-975b-6776245c4be7'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '${{parameters.azureResourceGroup}}'
+    location: '$(AzureLocation)'
+    templateLocation: 'Linked artifact'
+    csmFile: '${{parameters.template}}'
+    overrideParameters: '-hostingPlanName $(HostingPlanName) -hostingPlanSku $(hostingPlanSku) -hostingPlanCapacity $(hostingPlanCapacity) -webSiteName $(Sitename) -sqlserverName $(sqlservername) -sqlServerAdminLogin $(SQLUser) -sqlServerAdminPassword $(SQLPassword) -databaseName $(databasename) -collation SQL_Latin1_General_CP1_CI_AS -edition Standard -maxSizeBytes 1073741824 -requestedServiceObjectiveName S0 -appInsightsLocation $(AzureLocation) -VersionTag $(VersionTag) -DeploymentDate $(DeploymentDateTag) -EnvironmentTag $(Release.EnvironmentName)'
+    deploymentMode: 'Incremental'

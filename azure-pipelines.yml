@@ -1,132 +1,364 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+trigger: 
 
-#trigger:
-#- master
+  branches:
+    include: [ main ] # branch names which will trigger a build
 
-pool:
-  vmImage: 'windows-latest'
+pr: # will trigger on PR
+  branches:
+    include: [ main ] # branch names which will trigger a build
 
-name: '$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)_$(Rev:.r)'
+name: $(Build.DefinitionName)_$(GitVersion.FullSemVer)
 
 variables:
   System.Debug: true
-  solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  version.Major: '1'
-  version.Minor: '52'
-  version.Counter: $[counter(format('{0:yyyyMMdd}', pipeline.startTime), 0)]
 
+stages:
+  - stage: 'Build_Packages'
+    jobs:
+      - job: 'Version_Build_and_Test'
+        pool:
+          vmImage: 'windows-latest'
 
-steps:
-- task: NuGetToolInstaller@1
+        steps:
+        - task: GitVersion@5
+          inputs:
+            versionSpec: '5.x'
+            useConfigFile: true
+            configFilePath: '$(System.DefaultWorkingDirectory)/GitVersion.yml'
 
-- task: NuGetCommand@2
-  displayName: 'NuGet Restore'
-  inputs:
-    restoreSolution: '$(solution)'
+        - task: NuGetToolInstaller@1
 
-- task: PowerShell@2
-  displayName: 'Generate versionNumber'
-  inputs:
-    targetType: inline
-    script: |
-      $major = $env:version_Major
-      $minor = $env:version_Minor
-      $counter = $env:version_Counter
-      $build = "$(get-date -Format yy)$((get-date).dayofyear)"
-      $versionNumber = "$($major).$($minor).$($build).$($counter)"
-      write-host "##vso[task.setvariable variable=versionNumber;]$($versionNumber)"
+        - task: NuGetCommand@2
+          displayName: 'NuGet Restore'
+          inputs:
+            restoreSolution: '../**/*.sln'
 
-- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
-  displayName: 'Version Assemblies'
-  inputs:
-    Path: '$(Build.SourcesDirectory)'
-    InjectVersion: true
-    FilenamePattern: 'AssemblyInfo.*'
-    OutputVersion: 'OutputedVersion'
-    VersionNumber: '$(versionNumber)'
+      
+        - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Assemblies-Task.VersionAssemblies@2
+          displayName: 'Version Assemblies'
+          inputs:
+            Path: '$(Build.SourcesDirectory)'
+            InjectVersion: true
+            FilenamePattern: 'AssemblyInfo.*'
+            OutputVersion: 'OutputedVersion'
+            VersionNumber: '$(GitVersion.AssemblySemVer)'
 
-- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@2
-  displayName: 'Version Dacpac files'
-  inputs:
-    ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
-    Path: '$(Build.SourcesDirectory)'
-    VersionNumber: '$(versionNumber)'
-    InjectVersion: true
-    OutputVersion: 'OutputedVersion'
+        - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@2
+          displayName: 'Version Dacpac files'
+          inputs:
+            ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
+            Path: '$(Build.SourcesDirectory)'
+            VersionNumber: '$(GitVersion.AssemblySemVer)'
+            InjectVersion: true
+            OutputVersion: 'OutputedVersion'
 
-- task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-JSONFile-Task.VersionJSONFile@2
-  displayName: 'Version ARM Templates'
-  inputs:
-    Path: '$(Build.SourcesDirectory)'
-    InjectVersion: true
-    OutputVersion: 'OutputedVersion'
-    VersionNumber: '$(versionNumber)'
-    FilenamePattern: azuredeploy.json
-    Field: contentVersion
+        - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-JSONFile-Task.VersionJSONFile@2
+          displayName: 'Version ARM Templates'
+          inputs:
+            Path: '$(Build.SourcesDirectory)'
+            InjectVersion: true
+            OutputVersion: 'OutputedVersion'
+            VersionNumber: '$(GitVersion.AssemblySemVer)'
+            FilenamePattern: azuredeploy.json
+            Field: contentVersion
 
-- task: VSBuild@1
-  displayName: 'Build Solutions'
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true;PublishProfile=Release'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+        - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-JSONFile-Task.VersionJSONFile@1
+          displayName: 'Version ARM JSON File'
+          inputs:
+            versionForJSONFileFormat: '{1}.{2}.{3}.(4}'
+            FilenamePattern: WebSiteSQLDatabase.json
+            Field: contentVersion
+            InjectVersion: true
+            VersionNumber: '$(GitVersion.AssemblySemVer)'
 
-- task: VSTest@2
-  displayName: 'Test Assemblies'
-  inputs:
-    runInParallel: false
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    testSelector: testAssemblies
-    testAssemblyVer2: |
-      **\\$(buildConfiguration)\\*.UnitTests.dll
-      !**\\obj\\**
-    codeCoverageEnabled: true
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    testRunTitle: 'Test Assemblies'
+        - task: SonarCloudPrepare@1
+          inputs:
+            SonarCloud: 'SonarCloud'
+            organization: 'blackmarblelabs'
+            scannerMode: 'MSBuild'
+            projectKey: 'blackmarblelabs_LivingTheDream'
+            projectName: 'LivingTheDream'
+            projectVersion: '$(GitVersion.Major).$(GitVersion.Minor)'
+            extraProperties: |
+              sonar.cs.vscoveragexml.reportsPaths=$(System.DefaultWorkingDirectory)/**/*.coveragexml
+              sonar.cs.vstest.reportsPaths=$(System.DefaultWorkingDirectory)/**/*.trx
 
-- task: OWASPDependencyCheck@0
-  inputs:
-    outputDirectory: '$(Common.TestResultsDirectory)/dependency-scan-results'
-    scanDirectory: '$(Build.SourcesDirectory)'
-    outputFormat: 'ALL'
-    useSonarQubeIntegration: false    
+        - task: VSBuild@1
+          displayName: 'Build ARM Solution'
+          inputs:
+            solution: 'ARM/**/*.sln'
+            msbuildArgs: ''
+            platform: '$(buildPlatform)'
+            configuration: '$(buildConfiguration)'
 
-- task: PublishTestResults@2
-  displayName: 'Publish OWASP Results'
-  inputs:
-    testResultsFormat: JUnit
-    testResultsFiles: '**/dependency-scan-results/*junit.xml'
-    searchFolder: '$(Common.TestResultsDirectory)'
-    testRunTitle: 'Dependency Check'
+        - task: VSBuild@1
+          displayName: 'Build Web Solution'
+          inputs:
+            solution: 'src/**/*.sln'
+            msbuildArgs: '/p:DeployOnBuild=true;PublishProfile=Release'
+            platform: '$(buildPlatform)'
+            configuration: '$(buildConfiguration)'
 
-- task: PublishSymbols@1
-  displayName: 'Publish symbols'
-  inputs:
-    SearchPattern: '**\bin\**\*.pdb'
-  continueOnError: true
+        - task: VSTest@2
+          displayName: 'Test Assemblies'
+          inputs:
+            runInParallel: false
+            platform: '$(buildPlatform)'
+            configuration: '$(buildConfiguration)'
+            testSelector: testAssemblies
+            testAssemblyVer2: |
+              **\\$(buildConfiguration)\\*.UnitTests.dll
+              !**\\obj\\**
+            codeCoverageEnabled: true
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+            testRunTitle: 'Test Assemblies'
+            resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
 
-- task: CopyFiles@1
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    SourceFolder: '$(build.sourcesdirectory)'
-    Contents: |
-     **\*.codedui\bin\$(BuildConfiguration)\**
-     **\*.integrationtests\bin\$(BuildConfiguration)\**
-     **\*.seleniumtests\bin\$(BuildConfiguration)\**
-     **\_publish\**
-     **\*.dacpac
-     **\azuredeploy*.json
-     **\ReleaseNotesTemplate.md
-    TargetFolder: '$(build.artifactstagingdirectory)'
+        - task: CodeCoverage-Format-Convertor@1
+          inputs:
+            ProjectDirectory: '$(System.DefaultWorkingDirectory)\TestResults'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+        - task: OWASPDependencyCheck@0
+          inputs:
+            outputDirectory: '$(Common.TestResultsDirectory)/dependency-scan-results'
+            scanDirectory: '$(Build.SourcesDirectory)'
+            outputFormat: 'ALL'
+            useSonarQubeIntegration: false    
+
+        - task: SonarCloudAnalyze@1 
+        - task: SonarCloudPublish@1
+          inputs:
+            pollingTimeoutSec: '300'
+
+        - task: PublishTestResults@2
+          displayName: 'Publish OWASP Results'
+          inputs:
+            testResultsFormat: JUnit
+            testResultsFiles: '**/dependency-scan-results/*junit.xml'
+            searchFolder: '$(Common.TestResultsDirectory)'
+            testRunTitle: 'Dependency Check'
+
+        - task: PublishSymbols@1
+          displayName: 'Publish symbols'
+          inputs:
+            SearchPattern: '**\bin\**\*.pdb'
+          continueOnError: true
+
+        - task: CopyFiles@1
+          displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+          inputs:
+            SourceFolder: '$(build.sourcesdirectory)'
+            Contents: |
+              **\*.codedui\bin\$(BuildConfiguration)\**
+              **\*.integrationtests\bin\$(BuildConfiguration)\**
+              **\*.seleniumtests\bin\$(BuildConfiguration)\**
+              **\_publish\**
+              **\*.dacpac
+              **\azuredeploy*.json
+            TargetFolder: '$(build.artifactstagingdirectory)'
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: ARM'
+          inputs:
+            PathtoPublish: '$(build.artifactstagingdirectory)/FabrikamEnv'
+            ArtifactName: ARM
+    
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: WebSitePackages'
+          inputs:
+            ArtifactName: WebSitePackages
+            PathtoPublish: '$(build.artifactstagingdirectory)/Src'
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: WIKITemplates'
+          inputs:
+            ArtifactName: WIKITemplates
+            PathtoPublish: '$(build.sourcesdirectory)/WIKIReleaseNotesTemplate.md'
+      - job: 'Release_Notes'
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+        - task: XplatGenerateReleaseNotes@3
+          displayName: 'Generate build release notes'
+          inputs:
+            outputfile: '$(build.artifactstagingdirectory)/ReleaseNotes.md'
+            templateLocation: 'File'
+            templatefile: '$(build.sourcesdirectory)/BuildReleaseNotesTemplate.md'
+            dumpPayloadToConsole: false
+            dumpPayloadToFile: false
+            replaceFile: True
+            getParentsAndChildren: False
+            getAllParents: False
+            getIndirectPullRequests: False
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: ReleaseNotes'
+          inputs:
+            ArtifactName: ReleaseNotes
+            PathtoPublish: '$(build.artifactstagingdirectory)/ReleaseNotes.md'
+  
+  - stage: Integration
+    jobs:
+    - deployment: ARM_Provisioning
+      timeoutInMinutes: 0
+      environment: 'Integration'
+      variables:
+      - group: Integration
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\ProvisionUsingARM.yml
+              parameters:
+                version: $(Build.BuildNumber)
+                template: '$(Pipeline.Workspace)/ARM/Templates/WebSiteSQLDatabase.json'
+                AzureResourceGroup: $(AzureResourceGroup)
+
+    - deployment: Web_Deployment
+      timeoutInMinutes: 0
+      dependsOn: ARM_Provisioning
+      environment: 'Integration'
+      variables:
+      - group: Integration
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\DeployWebSite.yml
+              parameters:
+                sourcePath: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Web/_publish'
+                filePattern: FabrikamFiber.Web.SetParameters.xml
+                Sitename: '$(Sitename)'
+                secretTokens: 'SQLPassword:$(SQLPassword)'
+                DacpacFile: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Database/bin/Release/FabrikamFiber.Database.dacpac'
+
+    - deployment: Web_Test
+      timeoutInMinutes: 0
+      dependsOn: Web_Deployment
+      environment: 'Integration'
+      variables:
+      - group: Integration
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\TestWebSite.yml
+              parameters:
+                IntSourcePath: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Web.IntegrationTests/bin/Release/'
+                IntFilePattern: FabrikamFiber.Web.IntegrationTests.dll.config
+                UxSourcePath: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Web.SeleniumTests/bin/Release/'
+                UxFilePattern: FabrikamFiber.Web.SeleniumTests.dll.config
+    - deployment: ARM_Tidy_Up
+      timeoutInMinutes: 0
+      dependsOn: Web_Test
+      environment: 'Integration'
+      variables:
+      - group: Integration
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\RemoveUsingARM.yml
+              parameters:
+                AzureResourceGroup: $(AzureResourceGroup)
+
+  - stage: QA
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+    - deployment: ARM_Provisioning
+      timeoutInMinutes: 0
+      environment: 'QA'
+      variables:
+      - group: QA
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\ProvisionUsingARM.yml
+              parameters:
+                version: $(Build.BuildNumber)
+                template: '$(Pipeline.Workspace)/ARM/Templates/WebSiteSQLDatabase.json'
+                AzureResourceGroup: $(AzureResourceGroup)
+
+    - deployment: Web_Deployment
+      timeoutInMinutes: 0
+      dependsOn: ARM_Provisioning
+      environment: 'QA'
+      variables:
+      - group: QA
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\DeployWebSite.yml
+              parameters:
+                sourcePath: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Web/_publish'
+                filePattern: FabrikamFiber.Web.SetParameters.xml
+                Sitename: '$(Sitename)'
+                secretTokens: 'SQLPassword:$(SQLPassword)'
+                DacpacFile: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Database/bin/Release/FabrikamFiber.Database.dacpac'
+
+            - template: YAMLTemplates\WIKIReleaseNotes.yml
+              parameters:
+                version: $(Build.BuildNumber)
+                template: '$(Pipeline.Workspace)/WIKITemplates/WIKIReleaseNotesTemplate.md'
+  
+
+  - stage: Prod
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+    - deployment: ARM_Provisioning
+      timeoutInMinutes: 0
+      environment: 'Prod'
+      variables:
+      - group: Prod
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\ProvisionUsingARM.yml
+              parameters:
+                version: $(Build.BuildNumber)
+                template: '$(Pipeline.Workspace)/ARM/Templates/WebSiteSQLDatabase.json'
+                AzureResourceGroup: $(AzureResourceGroup)
+
+    - deployment: Web_Deployment
+      timeoutInMinutes: 0
+      dependsOn: ARM_Provisioning
+      environment: 'Prod'
+      variables:
+      - group: Prod
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: YAMLTemplates\DeployWebSite.yml
+              parameters:
+                sourcePath: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Web/_publish'
+                filePattern: FabrikamFiber.Web.SetParameters.xml
+                Sitename: '$(Sitename)'
+                secretTokens: 'SQLPassword:$(SQLPassword)'
+                DacpacFile: '$(Pipeline.Workspace)/WebSitePackages/FabrikamFiber.Database/bin/Release/FabrikamFiber.Database.dacpac'
+            - template: YAMLTemplates\WIKIReleaseNotes.yml
+              parameters:
+                version: $(Build.BuildNumber)
+                template: '$(Pipeline.Workspace)/WIKITemplates/WIKIReleaseNotesTemplate.md'
+            #- task: richardfennellBM.BM-VSTS-BuildUpdating-Tasks.BuildRetension-Task.BuildRetensionTask@2
+            #  displayName: 'Update Build Retension'
+            

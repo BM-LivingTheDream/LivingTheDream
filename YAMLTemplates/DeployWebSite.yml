@@ -1,0 +1,28 @@
+parameters:
+- name: sourcePath
+  type: string
+- name: filePattern
+  type: string
+- name: Sitename
+  type: string
+- name: secretTokens
+  type: string
+- name: DacpacFile
+  type: string
+
+steps:
+- task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
+  displayName: 'Replace tokens in in SetParameters file'
+  inputs:
+    sourcePath: '${{parameters.sourcePath}}'
+    filePattern: ${{parameters.filePattern}}
+    secretTokens: '${{parameters.secretTokens}}'
+- task: AzureRmWebAppDeployment@3
+  displayName: 'Deploy AzureRM Web App: ${{parameters.Sitename}}'
+  inputs:
+    azureSubscription: 'Black Marble EA Dev/Test(1fa90b4c-d84e-48f4-975b-6776245c4be7)'
+    WebAppName: '${{parameters.Sitename}}'
+    SetParametersFile: '${{parameters.sourcePath}}//${{parameters.filePattern}}'
+    Package: '${{parameters.sourcePath}}//*.Web.zip'
+    UseWebDeploy: true
+

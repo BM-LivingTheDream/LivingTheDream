@@ -1,0 +1,47 @@
+parameters:
+- name: IntSourcePath
+  type: string
+- name: IntFilePattern
+  type: string
+- name: UxSourcePath
+  type: string
+- name: UxFilePattern
+  type: string
+
+steps:
+- task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
+  displayName: 'Replace tokens in in SetParameters file'
+  inputs:
+    sourcePath: '${{parameters.IntSourcePath}}'
+    filePattern: ${{parameters.IntFilePattern}}
+- task: VSTest@2
+  displayName: 'Run Integration Tests'
+  inputs:
+    searchFolder: ${{parameters.IntSourcePath}}
+    testAssemblyVer2: |
+     **\*.integrationtests.dll
+     !**\obj\**
+    runOnlyImpactedTests: false
+    runInParallel: false
+    runTestsInIsolation: false
+    codeCoverageEnabled: true
+    testRunTitle: 'Integration Tests'
+    diagnosticsEnabled: True
+- task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
+  displayName: 'Replace tokens in in SetParameters file'
+  inputs:
+    sourcePath: '${{parameters.UxSourcePath}}'
+    filePattern: ${{parameters.UxFilePattern}}
+- task: VSTest@2
+  displayName: 'Test Selenium Tests'
+  inputs:
+    searchFolder: ${{parameters.UxSourcePath}}
+    testAssemblyVer2: |
+     **\*.SeleniumTest*.dll
+     !**\obj\**
+    runOnlyImpactedTests: false
+    runInParallel: false
+    runTestsInIsolation: false
+    codeCoverageEnabled: true
+    testRunTitle: 'Selenium Tests'
+    diagnosticsEnabled: True
