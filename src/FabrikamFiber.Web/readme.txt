@@ -1,5 +1,6 @@
 ﻿Readme notes edited for demo on 20th Jan
 This is another edit for the demo on the 25th
+Edit for the Hull Demo
 
 In order to use the Intranet template, you'll need to enable Windows Authentication
 and disable Anonymous Authentication.
