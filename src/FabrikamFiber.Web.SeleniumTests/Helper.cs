@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 
@@ -27,8 +26,6 @@ namespace FabrikamFiber.Web.SeleniumTests
             var driverName = GetWebConfigSetting("webdriver");
             switch (driverName)
             {
-                case "PhantomJS":
-                    return new PhantomJSDriver();
                 case "Chrome":
                     return new ChromeDriver();
                 case "Firefox":

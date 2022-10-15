@@ -22,9 +22,11 @@ stages:
           vmImage: 'windows-latest'
 
         steps:
-        - task: GitVersion@5
+        - task: gitversion/setup@0
           inputs:
             versionSpec: '5.x'
+        - task: gitversion/execute@0
+          inputs:
             useConfigFile: true
             configFilePath: '$(System.DefaultWorkingDirectory)/GitVersion.yml'
 
@@ -48,7 +50,6 @@ stages:
         - task: richardfennellBM.BM-VSTS-Versioning-Task-DEV.Version-Dacpac-Task.VersionDacpac@2
           displayName: 'Version Dacpac files'
           inputs:
-            ToolPath: 'C:\Program Files\Microsoft SQL Server\140\DAC\bin\'
             Path: '$(Build.SourcesDirectory)'
             VersionNumber: '$(GitVersion.AssemblySemVer)'
             InjectVersion: true
@@ -72,6 +73,22 @@ stages:
             Field: contentVersion
             InjectVersion: true
             VersionNumber: '$(GitVersion.AssemblySemVer)'
+
+        - task: RunARMTTKTests@1
+          displayName: 'Run ARM-TTK on all ARM templates'
+          inputs:
+            #Wildcard * needed for recurse on 1.0.8 and 1.0.10; remove if 1.0.9
+            templatelocation: '$(Build.SourcesDirectory)\ARM\*'
+            resultLocation: '$(Build.SourcesDirectory)'
+          continueOnError: true
+        - task: PublishTestResults@2
+          displayName: 'Publish ARM-TTK test results'
+          inputs:
+            testResultsFormat: 'NUnit'
+            testResultsFiles: '$(Build.SourcesDirectory)\*-armttk.xml'
+            testRunTitle: 'Run_$(Build.BuildNumber)'
+            failTaskOnFailedTests: false
+          condition: always()
 
         - task: SonarCloudPrepare@1
           inputs:
@@ -120,13 +137,19 @@ stages:
           inputs:
             ProjectDirectory: '$(System.DefaultWorkingDirectory)\TestResults'
 
-        - task: OWASPDependencyCheck@0
+        - task: dependency-check-build-task@6
+          displayName: Dependency Check
           inputs:
-            outputDirectory: '$(Common.TestResultsDirectory)/dependency-scan-results'
-            scanDirectory: '$(Build.SourcesDirectory)'
-            outputFormat: 'ALL'
-            useSonarQubeIntegration: false    
-
+            projectName: 'LivingTheDream'
+            scanPath: 'src'
+            format: 'HTML,XML'
+        - task: DependancyCheckToSonarCubeConvertor@1
+          displayName: OWASP Dependancy Check To SonarQube/SoanrCloud Convertor
+          inputs:
+            Input: $(COMMON.TESTRESULTSDIRECTORY)\dependency-check\dependency-check-report.xml
+            Output: $(Agent.TempDirectory)\dependancy.json
+            Filename: $(Build.SourcesDirectory)\src\FabrikamFiber.Web\Global.asax.cs
+            
         - task: SonarCloudAnalyze@1 
         - task: SonarCloudPublish@1
           inputs:
@@ -179,11 +202,14 @@ stages:
         pool:
           vmImage: 'windows-latest'
         steps:
-        - task: GitVersion@5
+        - task: gitversion/setup@0
           inputs:
             versionSpec: '5.x'
+        - task: gitversion/execute@0
+          inputs:
             useConfigFile: true
             configFilePath: '$(System.DefaultWorkingDirectory)/GitVersion.yml'
+
         - task: XplatGenerateReleaseNotes@3
           displayName: 'Generate build release notes'
           inputs:
