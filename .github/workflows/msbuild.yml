@@ -42,8 +42,7 @@ jobs:
       uses: microsoft/vstest-action@v1.0.0
       with:
         # Run tests from the specified files
-        #testAssembly: '**\\*UnitTests*.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**'
-        testAssembly: "D:\\a\\LivingTheDream\\LivingTheDream\\src\\FabrikamFiber.Web.UnitTests\\bin\\Release\\FabrikamFiber.Web.UnitTests.dll"
+        testAssembly: '**\\*Tests*.dll'
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: true
         resultLogsArtifactName: vs-test-unittest-result-logs
