@@ -8,7 +8,7 @@ on:
 
 env:
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: ./src/FabrikamFiber.CallCenter.sln
+  SOLUTION_FILE_PATH: ./src
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -37,3 +37,13 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: vstest-action
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        # Run tests from the specified files
+        testAssembly: "**\\*unittest*.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**"
+        # Folder to search for the test assemblies
+        searchFolder: ${{env.SOLUTION_FILE_PATH}}
+        codeCoverageEnabled: true
+        resultLogsArtifactName: vs-test-unittest-result-logs
