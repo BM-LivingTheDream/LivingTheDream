@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 jobs:
-  build-ARM:
+  Build-ARM:
     runs-on: windows-latest
 
     steps:
@@ -41,7 +41,7 @@ jobs:
         name: 'ARM'
         path: '.\\ARM\\FabrikamEnv\\bin\\${{env.BUILD_CONFIGURATION}}'
 
-  build:
+  Build:
     runs-on: windows-latest
 
     steps:
@@ -58,7 +58,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DeployOnBuild=true;PublishProfile=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: vstest-action
       uses: microsoft/vstest-action@v1.0.0
@@ -67,7 +67,7 @@ jobs:
         testAssembly: '**\\bin\\${{env.BUILD_CONFIGURATION}}\\*UnitTests*.dll'
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: false
-        resultLogsArtifactName: vs-test-unittest-result-logs
+        resultLogsArtifactName: UnitTests-Logs
  
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.1
@@ -78,7 +78,7 @@ jobs:
  
   Integration:
     runs-on: windows-latest
-    needs: [build, build-ARM]
+    needs: [Build, Build-ARM]
 
     steps:
     - run: "echo 'hello'"
