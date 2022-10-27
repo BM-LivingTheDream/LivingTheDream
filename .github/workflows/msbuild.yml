@@ -61,3 +61,12 @@ jobs:
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: false
         resultLogsArtifactName: vs-test-unittest-result-logs
+  
+  Integtation:
+    runs-on: windows-latest
+    needs: [build, build-ARM]
+
+    steps:
+    - run: "echo 'hello'"
+      shell: pwsh
+
