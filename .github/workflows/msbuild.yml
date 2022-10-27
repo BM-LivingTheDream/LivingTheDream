@@ -43,7 +43,5 @@ jobs:
       with:
         # Run tests from the specified files
         testAssembly: '**\\*UnitTests*.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**'
-        # Folder to search for the test assemblies
-        searchFolder: ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: true
         resultLogsArtifactName: vs-test-unittest-result-logs
