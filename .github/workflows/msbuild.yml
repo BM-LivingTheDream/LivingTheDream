@@ -8,7 +8,7 @@ on:
 
 env:
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: ./src
+  SOLUTION_FILE_PATH: ./src/
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -43,5 +43,6 @@ jobs:
       with:
         # Run tests from the specified files
         testAssembly: '**\\*UnitTests*.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**'
+        searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: true
         resultLogsArtifactName: vs-test-unittest-result-logs
