@@ -33,6 +33,13 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ./ARM/
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        # Artifact name
+        name: 'ARM'
+        path: '.\\ARM\\FabrikamEnv\\bin\\${{env.BUILD_CONFIGURATION}}'
 
   build:
     runs-on: windows-latest
@@ -61,7 +68,14 @@ jobs:
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: false
         resultLogsArtifactName: vs-test-unittest-result-logs
-  
+ 
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        # Artifact name
+        name: 'WebSite'
+        path: '.\\src\\FabrikamFiber.Web\\bin\\${{env.BUILD_CONFIGURATION}}'
+ 
   Integration:
     runs-on: windows-latest
     needs: [build, build-ARM]
