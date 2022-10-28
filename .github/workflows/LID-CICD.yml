@@ -90,7 +90,7 @@ jobs:
         name: 'Selenium-Tests'
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-  Integration:
+  Integration-ARM:
     runs-on: windows-latest
     needs: [Build, Build-ARM]
     environment:
@@ -98,9 +98,14 @@ jobs:
     steps:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
+      id: arm-download
       with:
         # Artifact name
         name: ARM
+        path: ./ARM
+    - name: 'Echo download path'
+      run: echo ${{steps.arm-download.outputs.download-path}}
+
     - name: Azure Login
       uses: Azure/login@v1.4.6
       with:
@@ -113,6 +118,23 @@ jobs:
         subscriptionId: ${{ secrets.AZURESUBSCRIPTION }}
         region: ${{ secrets.AZURELOCATION }}
         resourceGroupName: ${{ secrets.AzureResourceGroup}}
-        template: '..\\Templates\\WebSiteSQLDatabase.json'
+        template: '.\\ARM\\Templates\\WebSiteSQLDatabase.json' 
         deploymentMode: 'Incremental'
-        additionalArguments: '-hostingPlanName ${{ secrets.HostingPlanName}} -hostingPlanSku ${{ secrets.hostingPlanSku}} -hostingPlanCapacity ${{ secrets.hostingPlanCapacity}} -webSiteName ${{ secrets.Sitename}} -sqlserverName ${{ secrets.sqlservername}} -sqlServerAdminLogin ${{ secrets.SQLUser}} -sqlServerAdminPassword ${{ secrets.SQLPassword}} -databaseName ${{ secrets.databasename}} -collation SQL_Latin1_General_CP1_CI_AS -edition Standard -maxSizeBytes 1073741824 -requestedServiceObjectiveName S0 -appInsightsLocation ${{ secrets.AzureLocation}} -VersionTag "1.2.3" -DeploymentDate "2022-10-28" -EnvironmentTag "tag"'
+        parameters: '-hostingPlanName ${{ secrets.HostingPlanName}} -hostingPlanSku ${{ secrets.hostingPlanSku}} -hostingPlanCapacity ${{ secrets.hostingPlanCapacity}} -webSiteName ${{ secrets.Sitename}} -sqlserverName ${{ secrets.sqlservername}} -sqlServerAdminLogin ${{ secrets.SQLUser}} -sqlServerAdminPassword ${{ secrets.SQLPassword}} -databaseName ${{ secrets.databasename}} -collation SQL_Latin1_General_CP1_CI_AS -edition Standard -maxSizeBytes 1073741824 -requestedServiceObjectiveName S0 -appInsightsLocation ${{ secrets.AzureLocation}} -VersionTag "1.2.3" -DeploymentDate "2022-10-28" -EnvironmentTag "tag"'
+
+  Integration-Deploy:
+    runs-on: windows-latest
+    needs: [Integration-ARM]
+    environment:
+      name: Integration
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: 'Webdeploy-Package'
+    - uses: cschleiden/replace-tokens@v1
+      with:
+        tokenPrefix: '__'
+        tokenSuffix: '__'
+        files: '["**/FabrikamFiber.Web.SetParameters.xml"]'
