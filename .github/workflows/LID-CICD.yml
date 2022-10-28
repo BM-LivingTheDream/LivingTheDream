@@ -140,6 +140,11 @@ jobs:
         tokenSuffix: '__'
         files: '["**/FabrikamFiber.Web.SetParameters.xml"]'
 
+    - name: Azure Login
+      uses: Azure/login@v1.4.6
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        
     - name: 'Run az commands'
       run: |
         $publishProfile = az webapp deployment list-publishing-profiles --resource-group GH-LivingTheDream-INT --name BM-GH-LID-INT --query "[?publishMethod=='MSDeploy']" --subscription "b59e7f04-c6e8-40e7-b839-908cb62c8f22" | convertfrom-json
