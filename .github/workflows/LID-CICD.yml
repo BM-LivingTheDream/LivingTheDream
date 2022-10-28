@@ -133,8 +133,15 @@ jobs:
       with:
         # Artifact name
         name: 'Webdeploy-Package'
+        path: ./WeDeploy
     - uses: cschleiden/replace-tokens@v1
       with:
         tokenPrefix: '__'
         tokenSuffix: '__'
         files: '["**/FabrikamFiber.Web.SetParameters.xml"]'
+
+    - name: 'Run az commands'
+      run: |
+        $publishProfile = az webapp deployment list-publishing-profiles --resource-group GH-LivingTheDream-INT --name BM-GH-LID-INT --query "[?publishMethod=='MSDeploy']" --subscription "b59e7f04-c6e8-40e7-b839-908cb62c8f22" | convertfrom-json
+        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder(./WeDeploy).ShortPath                             
+        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:dirPath="$shortpath",includeAcls=false -dest:dirpath=D:\home\site\wwwroot,ComputerName="https://$webAppName.scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug
