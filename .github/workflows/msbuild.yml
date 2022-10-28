@@ -93,7 +93,8 @@ jobs:
   Integration:
     runs-on: windows-latest
     needs: [Build, Build-ARM]
-
+    environment:
+      name: Integration
     steps:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
@@ -105,8 +106,13 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}     
 
-    - name: 'Run az commands'
-      run: |
-        az account show
-        az group list
-        pwd 
+    - name: Deploy Azure Resource Manager (ARM) Template
+      uses: Azure/arm-deploy@v1.0.8
+      with:
+        scope: 'resourcegroup'
+        subscriptionId: ${{ secrets.AZURESUBSCRIPTION }}
+        region: ${{ secrets.AZURELOCATION }}
+        resourceGroupName: 'GHTest'
+        template: '..\\Templates\\WebSiteSQLDatabase.json'
+        deploymentMode: 'Incremental'
+        parameters: '-hostingPlanName ${{ secrets.HostingPlanName}} -hostingPlanSku ${{ secrets.hostingPlanSku}} -hostingPlanCapacity ${{ secrets.hostingPlanCapacity}} -webSiteName ${{ secrets.Sitename}} -sqlserverName ${{ secrets.sqlservername}} -sqlServerAdminLogin ${{ secrets.SQLUser}} -sqlServerAdminPassword ${{ secrets.SQLPassword}} -databaseName ${{ secrets.databasename}} -collation SQL_Latin1_General_CP1_CI_AS -edition Standard -maxSizeBytes 1073741824 -requestedServiceObjectiveName S0 -appInsightsLocation ${{ secrets.AzureLocation}} -VersionTag "1.2.3" -DeploymentDate "2022-10-28" -EnvironmentTag "tag"'
