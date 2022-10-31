@@ -148,7 +148,8 @@ jobs:
     - name: 'Deploy web site with MSDeploy'
       run: |
         $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ secrets.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
-        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WeDeploy").ShortPath                             
+        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WeDeploy").ShortPath  
+        cat "$shortpath\FabrikamFiber.Web.SetParameters.xml"            
         "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe -verb:sync -source:package=$shortpath\FabrikamFiber.Web.zip -setParamFile:$shortpath\FabrikamFiber.Web.SetParameters.xml -dest:auto,ComputerName=https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite),UserName=($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension"
         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
       shell: pwsh
