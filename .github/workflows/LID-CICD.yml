@@ -135,7 +135,10 @@ jobs:
 
     - name: Replace tokens in configuration file
       run: |
-        $filecontent = Get-Content -Path ./WebDeploy/FabrikamFiber.Web.SetParameters.xml
+        dir
+        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
+        $file = $shortPath/FabrikamFiber.Web.SetParameters.xml
+        $filecontent = Get-Content -Path $file
         $filecontent -replace "__Sitename__", "${{ secrets.Sitename  }}" | Out-File $file
       shell: pwsh
 
