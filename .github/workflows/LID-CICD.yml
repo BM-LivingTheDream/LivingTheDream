@@ -137,7 +137,7 @@ jobs:
       run: |
         dir
         $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
-        $file = $shortPath/FabrikamFiber.Web.SetParameters.xml
+        $file = "$shortPath\\FabrikamFiber.Web.SetParameters.xml"
         $filecontent = Get-Content -Path $file
         $filecontent -replace "__Sitename__", "${{ secrets.Sitename  }}" | Out-File $file
       shell: pwsh
