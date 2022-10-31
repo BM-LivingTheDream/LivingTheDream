@@ -28,20 +28,20 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Build
+    - name: Build ARM Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ./ARM/
       
-    - name: Upload a Build Artifact
+    - name: Upload ARM Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
         name: 'ARM'
         path: '.\\ARM\\FabrikamEnv\\bin\\${{env.BUILD_CONFIGURATION}}'
 
-  Build:
+  Build-Solution:
     runs-on: windows-latest
 
     steps:
@@ -54,13 +54,13 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Build
+    - name: Build Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DeployOnBuild=true /p:PublishProfile=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
-    - name: vstest-action
+    - name: Run Unit Tests
       uses: microsoft/vstest-action@v1.0.0
       with:
         # Run tests from the specified files
@@ -69,21 +69,21 @@ jobs:
         codeCoverageEnabled: false
         resultLogsArtifactName: UnitTests-Logs
  
-    - name: Upload a Build Artifact
+    - name: Upload Web Deploy Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
         name: 'Webdeploy-Package'
         path: '.\\src\\FabrikamFiber.Web\\_publish'
 
-    - name: Upload a Build Artifact
+    - name: Upload Integration Tests Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-    - name: Upload a Build Artifact
+    - name: Upload Selenium Tests Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
@@ -92,19 +92,17 @@ jobs:
 
   Integration-ARM:
     runs-on: windows-latest
-    needs: [Build, Build-ARM]
+    needs: [Build-Solution, Build-ARM]
     environment:
       name: Integration
     steps:
-    - name: Download a Build Artifact
+    - name: Download ARM Build Artifact
       uses: actions/download-artifact@v3.0.1
       id: arm-download
       with:
         # Artifact name
         name: ARM
         path: ./ARM
-    - name: 'Echo download path'
-      run: echo ${{steps.arm-download.outputs.download-path}}
 
     - name: Azure Login
       uses: Azure/login@v1.4.6
@@ -128,13 +126,15 @@ jobs:
     environment:
       name: Integration
     steps:
-    - name: Download a Build Artifact
+    - name: Download Web Deploy Solution Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
         # Artifact name
         name: 'Webdeploy-Package'
         path: ./WeDeploy
-    - uses: cschleiden/replace-tokens@v1
+
+    - name: Replace tokens in configuration file
+      uses: cschleiden/replace-tokens@v1
       with:
         tokenPrefix: '__'
         tokenSuffix: '__'
@@ -145,8 +145,9 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}     
 
-    - name: 'Run az commands'
+    - name: 'Deploy web site with MSDeploy'
       run: |
         $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ secrets.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
         $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WeDeploy").ShortPath                             
         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$webAppName.scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
+      shell: pwsh
