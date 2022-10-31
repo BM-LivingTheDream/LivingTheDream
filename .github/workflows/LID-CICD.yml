@@ -139,12 +139,6 @@ jobs:
         $filecontent -replace "__Sitename__", "${{ secrets.Sitename  }}" | Out-File $file
       shell: pwsh
 
-      uses: jwsi/secret-parser@v1
-      with:
-        filename: ./WebDeploy/FabrikamFiber.Web.SetParameters.xml
-        secret-name: SiteName
-        secret-value: ${{ secrets.Sitename  }}
-
     - name: Azure Login
       uses: Azure/login@v1.4.6
       with:
