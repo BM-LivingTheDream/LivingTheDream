@@ -139,6 +139,12 @@ jobs:
         $file = ".\WebDeploy\FabrikamFiber.Web.SetParameters.xml"
         $filecontent = Get-Content -Path $file
         $filecontent -replace "__Sitename__", "${{secrets.Sitename}}" | Out-File $file
+        $filecontent -replace "__LOCATION__", "${{secrets.LOCATION}}" | Out-File $file
+        $filecontent -replace "__GENERATETESTDATA__", "${{secrets.GENERATETESTDATA}}" | Out-File $file
+        $filecontent -replace "__sqlservername__", "${{secrets.sqlservername}}" | Out-File $file
+        $filecontent -replace "__databasename__", "${{secrets.databasename}}" | Out-File $file
+        $filecontent -replace "__SQLUser__", "${{secrets.SQLUser}}" | Out-File $file
+        $filecontent -replace "__SQLPassword__", "${{secrets.SQLPassword}}" | Out-File $file
       shell: pwsh
 
     - name: Azure Login
