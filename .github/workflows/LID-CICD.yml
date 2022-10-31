@@ -138,7 +138,7 @@ jobs:
         ls .\webdeploy
         $file = ".\WebDeploy\FabrikamFiber.Web.SetParameters.xml"
         $filecontent = Get-Content -Path $file
-        $filecontent -replace "__Sitename__", "${{ secrets.Sitename  }}" | Out-File $file
+        $filecontent -replace "__Sitename__", "${{secrets.Sitename}}" | Out-File $file
       shell: pwsh
 
     - name: Azure Login
