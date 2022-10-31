@@ -134,6 +134,11 @@ jobs:
         path: ./WeDeploy
 
     - name: Replace tokens in configuration file
+      run: |
+        $filecontent = Get-Content -Path ./WebDeploy/FabrikamFiber.Web.SetParameters.xml
+        $filecontent -replace "__Sitename__", "${{ secrets.Sitename  }}" | Out-File $file
+      shell: pwsh
+
       uses: jwsi/secret-parser@v1
       with:
         filename: ./WebDeploy/FabrikamFiber.Web.SetParameters.xml
