@@ -135,7 +135,6 @@ jobs:
 
     - name: Replace tokens in configuration file
       run: |
-        ls .\webdeploy
         $file = ".\WebDeploy\FabrikamFiber.Web.SetParameters.xml"
         $filecontent = Get-Content -Path $file
         $filecontent -replace "__Sitename__", "${{secrets.Sitename}}" | Out-File $file
