@@ -43,7 +43,7 @@ jobs:
         path: '.\\ARM\\FabrikamEnv'
         field: 'contentVersion'
         VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
-        filenamepattern: 'azuredeploy.json' 
+        filenamepattern: 'WebSiteSQLDatabase.json' 
         recursion: 'true'
 
     - name: Add MSBuild to PATH
