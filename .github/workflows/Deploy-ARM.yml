@@ -1,8 +1,6 @@
 name: Reuseable workflow to publish ARM to Azure resource group
 on:
   workflow_call:
-    inputs:
-    secrets:
   
 jobs:
   Integration-ARM:
