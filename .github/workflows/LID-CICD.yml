@@ -91,74 +91,18 @@ jobs:
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
   Integration-ARM:
-    runs-on: windows-latest
+    uses: ./.github/workflows/Deploy-ARM.yml
+    with:
+      environment: Integration
+    secrets: inherit
     needs: [Build-Solution, Build-ARM]
-    environment:
-      name: Integration
-    steps:
-    - name: Download ARM Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      id: arm-download
-      with:
-        # Artifact name
-        name: ARM
-        path: ./ARM
-
-    - name: Azure Login
-      uses: Azure/login@v1.4.6
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}     
-
-    - name: Deploy Azure Resource Manager (ARM) Template
-      uses: Azure/arm-deploy@v1.0.8
-      with:
-        scope: 'resourcegroup'
-        subscriptionId: ${{ secrets.AZURESUBSCRIPTION }}
-        region: ${{ secrets.AZURELOCATION }}
-        resourceGroupName: ${{ secrets.AzureResourceGroup}}
-        template: '.\\ARM\\Templates\\WebSiteSQLDatabase.json' 
-        deploymentMode: 'Incremental'
-        parameters: 'hostingPlanName="${{ secrets.HostingPlanName}}" hostingPlanSku="${{ secrets.hostingPlanSku}}" hostingPlanCapacity="${{ secrets.hostingPlanCapacity}}" webSiteName="${{ secrets.Sitename}}" sqlserverName="${{ secrets.sqlservername}}" sqlServerAdminLogin="${{ secrets.SQLUser}}" sqlServerAdminPassword="${{ secrets.SQLPassword}}" databaseName="${{ secrets.databasename}}" collation="SQL_Latin1_General_CP1_CI_AS" edition="Standard" maxSizeBytes="1073741824" requestedServiceObjectiveName="S0" appInsightsLocation="${{ secrets.AzureLocation}}" VersionTag="1.2.3"" DeploymentDate="2022-10-28"" EnvironmentTag="tag"'
 
   Integration-Deploy:
-    runs-on: windows-latest
+    uses: ./.github/workflows/Deploy-Solution.yml
+    with:
+      environment: Integration
+    secrets: inherit
     needs: [Integration-ARM]
-    environment:
-      name: Integration
-    steps:
-    - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'Webdeploy-Package'
-        path: ./WebDeploy
-
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\WebDeploy\FabrikamFiber.Web.SetParameters.xml"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__Sitename__", "${{secrets.Sitename}}" 
-        $filecontent = $filecontent -replace "__LOCATION__", "${{secrets.LOCATION}}" 
-        $filecontent = $filecontent -replace "__GENERATETESTDATA__", "${{secrets.GENERATETESTDATA}}" 
-        $filecontent = $filecontent -replace "__sqlservername__", "${{secrets.sqlservername}}" 
-        $filecontent = $filecontent -replace "__databasename__", "${{secrets.databasename}}" 
-        $filecontent = $filecontent -replace "__SQLUser__", "${{secrets.SQLUser}}" 
-        $filecontent = $filecontent -replace "__SQLPassword__", "${{secrets.SQLPassword}}"
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh
-
-    - name: Azure Login
-      uses: Azure/login@v1.4.6
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}     
-
-    - name: 'Deploy web site with MSDeploy'
-      run: |
-        $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ secrets.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
-        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
-        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
-      shell: pwsh
 
   Integration-APITests:
     runs-on: windows-latest
@@ -218,3 +162,35 @@ jobs:
         testAssembly: '.\\Tests\\*Tests*.dll'
         codeCoverageEnabled: false
         resultLogsArtifactName: SeleniumTests-Logs
+
+  Integration-Tidy:
+    runs-on: windows-latest
+    needs: [Integration-UXTests,Integration-APITests]
+    environment:
+      name: Integration
+    steps:
+    - name: Azure Login
+      uses: Azure/login@v1.4.6
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+
+    - name: Remove Azure Resource Group
+      run: |
+        az group delete --name ${{ secrets.AzureResourceGroup}} --yes
+      shell: pwsh 
+
+  Production-ARM:
+    uses: ./.github/workflows/Deploy-ARM.yml
+    with:
+      environment: Production
+    secrets: inherit
+    needs: [Integration-Tidy]
+    if: github.ref == 'refs/heads/main'
+
+  Production-Deploy:
+    uses: ./.github/workflows/Deploy-Solution.yml
+    with:
+      environment: Production
+    secrets: inherit
+    needs: [Production-ARM]
+    if: github.ref == 'refs/heads/main'
