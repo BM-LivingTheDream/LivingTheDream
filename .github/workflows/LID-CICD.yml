@@ -27,6 +27,25 @@ jobs:
       with:
         fetch-depth: '0'
 
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+
+    - uses: rfennell/JSONFileVersioner@v1
+      with:
+        path: '.\\ARM\\FabrikamEnv'
+        field: 'contentVersion'
+        VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
+        filenamepattern: 'azuredeploy.json' 
+        recursion: 'true'
+
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
