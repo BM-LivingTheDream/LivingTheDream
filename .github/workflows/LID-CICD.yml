@@ -178,3 +178,19 @@ jobs:
       run: |
         az group delete --name ${{ secrets.AzureResourceGroup}} --yes
       shell: pwsh 
+
+  Production-ARM:
+    uses: ./.github/workflows/Deploy-ARM.yml
+    with:
+      environment: Production
+    secrets: inherit
+    needs: [Integration-Tidy]
+    if: github.ref == 'refs/heads/main'
+
+  Production-Deploy:
+    uses: ./.github/workflows/Deploy-Solution.yml
+    with:
+      environment: Production
+    secrets: inherit
+    needs: [Production-ARM]
+    if: github.ref == 'refs/heads/main'
