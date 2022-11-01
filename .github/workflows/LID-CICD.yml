@@ -206,6 +206,7 @@ jobs:
         $file = ".\Tests\FabrikamFiber.Web.SeleniumTests.dll.config"
         $filecontent = Get-Content -Path $file
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
+        $filecontent = $filecontent -replace "__webdriver__", "${{secrets.webdriver}}" 
         $filecontent | Out-File $file
         cat $file          
       shell: pwsh        
