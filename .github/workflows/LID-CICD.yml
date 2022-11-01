@@ -113,7 +113,7 @@ jobs:
       uses: Azure/powershell@v1
       with:
         inlineScript: |
-          $rgexists = az grup exists -n ${{ secrets.AzureResourceGroup}}
+          $rgexists = az group exists -n ${{ secrets.AzureResourceGroup}}
           if ($rgexists -eq 'false') {
             az group create --name ${{ secrets.AzureResourceGroup}} -- location ${{ secrets.AZURELOCATION }}
             write-host "Creating Azure Resource Group"
@@ -228,3 +228,20 @@ jobs:
         testAssembly: '.\\Tests\\*Tests*.dll'
         codeCoverageEnabled: false
         resultLogsArtifactName: SeleniumTests-Logs
+
+  Integration-Tidy:
+    runs-on: windows-latest
+    needs: [Integration-UXTests,Integration-APITests]
+    environment:
+      name: Integration
+    steps:
+    - name: Azure Login
+      uses: Azure/login@v1.4.6
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+
+    - name: Ensure Azure Resource Group is created
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          az group delete --name ${{ secrets.AzureResourceGroup}} --yes
