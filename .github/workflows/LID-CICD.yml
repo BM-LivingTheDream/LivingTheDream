@@ -93,6 +93,7 @@ jobs:
   Integration-ARM:
     uses: ./.github/workflows/Deploy-ARM.yml
     secrets: inherit
+    needs: [Build-Solution, Build-ARM]
 
   Integration-Deploy:
     runs-on: windows-latest

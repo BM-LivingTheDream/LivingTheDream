@@ -5,7 +5,6 @@ on:
 jobs:
   Integration-ARM:
     runs-on: windows-latest
-    needs: [Build-Solution, Build-ARM]
     environment:
       name: Integration
     steps:
