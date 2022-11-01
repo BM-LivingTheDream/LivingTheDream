@@ -110,14 +110,13 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}     
 
     - name: Ensure Azure Resource Group is created
-      uses: Azure/powershell@v1
-      with:
-        inlineScript: |
-          $rgexists = az group exists -n ${{ secrets.AzureResourceGroup}}
-          if ($rgexists -eq 'false') {
-            az group create --name ${{ secrets.AzureResourceGroup}} -- location ${{ secrets.AZURELOCATION }}
-            write-host "Creating Azure Resource Group"
-          }
+      run: |
+        $rgexists = az group exists -n ${{ secrets.AzureResourceGroup}}
+        if ($rgexists -eq 'false') {
+          az group create --name ${{ secrets.AzureResourceGroup}} -- location ${{ secrets.AZURELOCATION }}
+          write-host "Creating Azure Resource Group"
+        }
+      shell: pwsh 
 
     - name: Deploy Azure Resource Manager (ARM) Template
       uses: Azure/arm-deploy@v1.0.8
@@ -241,7 +240,6 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}     
 
     - name: Ensure Azure Resource Group is created
-      uses: Azure/powershell@v1
-      with:
-        inlineScript: |
-          az group delete --name ${{ secrets.AzureResourceGroup}} --yes
+      run: |
+        az group delete --name ${{ secrets.AzureResourceGroup}} --yes
+      shell: pwsh 
