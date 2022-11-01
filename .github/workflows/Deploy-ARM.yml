@@ -1,10 +1,12 @@
 name: Reuseable workflow to publish ARM to Azure resource group
+
 on:
   workflow_call:
     inputs:
       environment:
         required: true
         type: string
+        
 jobs:
   Integration-ARM:
     runs-on: windows-latest
