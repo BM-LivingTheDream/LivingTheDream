@@ -28,20 +28,6 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: GitVersion
-      id: gitversion
-      uses: nmcc/actions/gitversion@v1
-      with:
-        path-to-gitversion: packages/GitVersion.CommandLine/tools/GitVersion.exe
-
-    - name: Set project versions
-      id: update
-      uses: vers-one/dotnet-project-version-updater@v1.2
-      with:
-        file: |
-          "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
-        version: ${{ steps.gitversion.outputs.AssemblySemVer }}
-
     - name: Build ARM Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
