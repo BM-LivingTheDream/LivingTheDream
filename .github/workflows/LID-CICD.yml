@@ -184,7 +184,7 @@ jobs:
     with:
       environment: Production
     secrets: inherit
-    needs: [Integration-Tidy]
+    needs: [Integration-UXTests,Integration-APITests]
     if: github.ref == 'refs/heads/main'
 
   Production-Deploy:
