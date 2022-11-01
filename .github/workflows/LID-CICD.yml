@@ -159,3 +159,61 @@ jobs:
         $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
       shell: pwsh
+
+  Integration-APITests:
+    runs-on: windows-latest
+    needs: [Integration-Deploy]
+    environment:
+      name: Integration
+    steps:
+    - name: Download Web Deploy Solution Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: 'Integration-Tests'
+        path: ./Tests
+    - name: Replace tokens in configuration file
+      run: |
+        $file = ".\Tests\FabrikamFiber.Web.IntegrationTests.dll.config"
+        $filecontent = Get-Content -Path $file
+        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
+        $filecontent | Out-File $file
+        cat $file          
+      shell: pwsh        
+
+    - name: Run Integration API Tests
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        # Run tests from the specified files
+        testAssembly: '.\\Tests\\*Tests*.dll'
+        codeCoverageEnabled: false
+        resultLogsArtifactName: IntegrationTests-Logs
+
+  Integration-UXTests:
+    runs-on: windows-latest
+    needs: [Integration-Deploy]
+    environment:
+      name: Integration
+    steps:
+    - name: Download Web Deploy Solution Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: 'Selenium-Tests'
+        path: ./Tests
+    - name: Replace tokens in configuration file
+      run: |
+        $file = ".\Tests\FabrikamFiber.Web.SeleniumTests.dll.config"
+        $filecontent = Get-Content -Path $file
+        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
+        $filecontent | Out-File $file
+        cat $file          
+      shell: pwsh        
+
+    - name: Run Integration Selenium UX Tests
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        # Run tests from the specified files
+        testAssembly: '.\\Tests\\*Tests*.dll'
+        codeCoverageEnabled: false
+        resultLogsArtifactName: SeleniumTests-Logs
