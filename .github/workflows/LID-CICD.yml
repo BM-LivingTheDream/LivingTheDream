@@ -90,19 +90,12 @@ jobs:
         name: 'Selenium-Tests'
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-  Integration-ARM:
-    uses: ./.github/workflows/Deploy-ARM.yml
+  Integration-Deploy:
+    uses: ./.github/workflows/Deploy-Job.yml
     with:
       environment: Integration
     secrets: inherit
     needs: [Build-Solution, Build-ARM]
-
-  Integration-Deploy:
-    uses: ./.github/workflows/Deploy-Solution.yml
-    with:
-      environment: Integration
-    secrets: inherit
-    needs: [Integration-ARM]
 
   Integration-APITests:
     runs-on: windows-latest
@@ -179,18 +172,10 @@ jobs:
         az group delete --name ${{ secrets.AzureResourceGroup}} --yes
       shell: pwsh 
 
-  Production-ARM:
-    uses: ./.github/workflows/Deploy-ARM.yml
+  Production-Deploy:
+    uses: ./.github/workflows/Deploy-Job.yml
     with:
       environment: Production
     secrets: inherit
     needs: [Integration-UXTests,Integration-APITests]
-    if: github.ref == 'refs/heads/main'
-
-  Production-Deploy:
-    uses: ./.github/workflows/Deploy-Solution.yml
-    with:
-      environment: Production
-    secrets: inherit
-    needs: [Production-ARM]
     if: github.ref == 'refs/heads/main'
