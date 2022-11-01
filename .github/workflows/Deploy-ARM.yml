@@ -1,12 +1,15 @@
 name: Reuseable workflow to publish ARM to Azure resource group
 on:
   workflow_call:
-  
+  inputs:
+      environment:
+        required: true
+        type: string
 jobs:
   Integration-ARM:
     runs-on: windows-latest
     environment:
-      name: Integration
+      name: ${{ inputs.environment }}
     steps:
     - name: Download ARM Build Artifact
       uses: actions/download-artifact@v3.0.1

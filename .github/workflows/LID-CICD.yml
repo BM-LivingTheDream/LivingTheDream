@@ -90,8 +90,10 @@ jobs:
         name: 'Selenium-Tests'
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-  Integration-ARM:
+  Call-Deploy-ARM-Workflow:
     uses: ./.github/workflows/Deploy-ARM.yml
+    with:
+      environment: Integration
     secrets: inherit
     needs: [Build-Solution, Build-ARM]
 
