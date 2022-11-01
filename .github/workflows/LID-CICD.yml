@@ -113,7 +113,7 @@ jobs:
       run: |
         $rgexists = az group exists -n ${{ secrets.AzureResourceGroup}}
         if ($rgexists -eq 'false') {
-          az group create --name ${{ secrets.AzureResourceGroup}} -- location ${{ secrets.AZURELOCATION }}
+          az group create --name ${{ secrets.AzureResourceGroup}} --location ${{ secrets.AZURELOCATION }}
           write-host "Creating Azure Resource Group"
         }
       shell: pwsh 
