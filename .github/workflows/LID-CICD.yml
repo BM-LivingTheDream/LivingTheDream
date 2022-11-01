@@ -90,7 +90,7 @@ jobs:
         name: 'Selenium-Tests'
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-  Integration-Call-Deploy-ARM-Workflow:
+  Integration-ARM:
     uses: ./.github/workflows/Deploy-ARM.yml
     with:
       environment: Integration
@@ -98,44 +98,11 @@ jobs:
     needs: [Build-Solution, Build-ARM]
 
   Integration-Deploy:
-    runs-on: windows-latest
-    needs: [Integration-Call-Deploy-ARM-Workflow]
-    environment:
-      name: Integration
-    steps:
-    - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'Webdeploy-Package'
-        path: ./WebDeploy
-
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\WebDeploy\FabrikamFiber.Web.SetParameters.xml"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__Sitename__", "${{secrets.Sitename}}" 
-        $filecontent = $filecontent -replace "__LOCATION__", "${{secrets.LOCATION}}" 
-        $filecontent = $filecontent -replace "__GENERATETESTDATA__", "${{secrets.GENERATETESTDATA}}" 
-        $filecontent = $filecontent -replace "__sqlservername__", "${{secrets.sqlservername}}" 
-        $filecontent = $filecontent -replace "__databasename__", "${{secrets.databasename}}" 
-        $filecontent = $filecontent -replace "__SQLUser__", "${{secrets.SQLUser}}" 
-        $filecontent = $filecontent -replace "__SQLPassword__", "${{secrets.SQLPassword}}"
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh
-
-    - name: Azure Login
-      uses: Azure/login@v1.4.6
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}     
-
-    - name: 'Deploy web site with MSDeploy'
-      run: |
-        $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ secrets.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
-        $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
-        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
-      shell: pwsh
+    uses: ./.github/workflows/Deploy-Solution.yml
+    with:
+      environment: Integration
+    secrets: inherit
+    needs: [Integration-ARM]
 
   Integration-APITests:
     runs-on: windows-latest
