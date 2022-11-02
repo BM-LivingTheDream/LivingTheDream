@@ -115,7 +115,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
       with:
-        trx_files: "test-results/**/*.trx"
+        trx_files: "**/TestResults/**/*.trx"
         comment_title: "Unit Test Results"
  
     - name: Upload Web Deploy Build Artifact
