@@ -24,6 +24,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+
+    - uses: rfennell/JSONFileVersioner@v1
+      with:
+        path: '.\\ARM\\FabrikamEnv'
+        field: 'contentVersion'
+        VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
+        filenamepattern: 'WebSiteSQLDatabase.json' 
+        recursion: 'true'
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -46,6 +67,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -53,6 +76,25 @@ jobs:
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+
+    - name: Set project versions
+      id: update
+      uses: vers-one/dotnet-project-version-updater@v1.2
+      with:
+        file: |
+          "**/AssemblyInfo.cs"
+        version:  ${{ steps.gitversion.outputs.assemblySemVer  }}
 
     - name: Build Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
