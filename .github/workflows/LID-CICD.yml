@@ -242,7 +242,7 @@ jobs:
     runs-on: windows-latest
     needs: [Integration-UXTests,Integration-APITests]
     environment:
-      name: Integration
+      name: Integration-Tidy # this should just be integration, but added the extra so have control if tidy occurs
     steps:
     - name: Azure Login
       uses: Azure/login@v1.4.6
