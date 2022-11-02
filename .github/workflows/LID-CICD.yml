@@ -158,6 +158,12 @@ jobs:
     needs: [Integration-Deploy]
     environment:
       name: Integration
+    # permissions needed to allow test tesults to be published 
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
     steps:
     - name: Download Web Deploy Solution Build Artifact
       uses: actions/download-artifact@v3.0.1
@@ -182,11 +188,24 @@ jobs:
         codeCoverageEnabled: false
         resultLogsArtifactName: IntegrationTests-Logs
 
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always()
+      with:
+        trx_files: "**/TestResults/**/*.trx"
+        comment_title: "API Test Results"
+
   Integration-UXTests:
     runs-on: windows-latest
     needs: [Integration-Deploy]
     environment:
       name: Integration
+    # permissions needed to allow test tesults to be published 
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
     steps:
     - name: Download Web Deploy Solution Build Artifact
       uses: actions/download-artifact@v3.0.1
@@ -211,6 +230,13 @@ jobs:
         testAssembly: '.\\Tests\\*Tests*.dll'
         codeCoverageEnabled: false
         resultLogsArtifactName: SeleniumTests-Logs
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always()
+      with:
+        trx_files: "**/TestResults/**/*.trx"
+        comment_title: "UX Test Results"
 
   Integration-Tidy:
     runs-on: windows-latest
