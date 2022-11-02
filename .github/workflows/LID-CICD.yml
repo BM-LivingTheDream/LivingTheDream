@@ -65,6 +65,13 @@ jobs:
   Build-Solution:
     runs-on: windows-latest
 
+    # permissions needed to allow test tesults to be published 
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+
     steps:
     - uses: actions/checkout@v3
       with:
