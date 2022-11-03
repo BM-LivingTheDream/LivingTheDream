@@ -149,24 +149,30 @@ jobs:
   Create-Release:
     runs-on: ubuntu-latest
     needs: [Build-Solution, Build-ARM]
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     permissions:
       # write permission is required to create a github release
       contents: write
-      # write permission is required for autolabeler
-      # otherwise, read permission is required at least
-      pull-requests: write
     steps:
-    #- uses: actions/checkout@v3
-    #  with:
-    #    fetch-depth: '0'
-    - uses: release-drafter/release-drafter@v5
-      # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
-      # with:
-      #   config-name: my-config.yml
-      #   disable-autolabeler: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+
+    - uses: ncipollo/release-action@v1
+      with:
+        tag: "${{ steps.gitversion.outputs.SemVer  }}"
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   Integration-Deploy:
     uses: ./.github/workflows/Deploy-Job.yml
