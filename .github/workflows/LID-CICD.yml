@@ -149,7 +149,7 @@ jobs:
   Create-Release:
     runs-on: ubuntu-latest
     needs: [Build-Solution, Build-ARM]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       # write permission is required to create a github release
       contents: write
@@ -166,7 +166,7 @@ jobs:
     #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #    WITH_V: true
     - uses: release-drafter/release-drafter@v5
-      # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
+      # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml 
       # with:
       #   config-name: my-config.yml
       #   disable-autolabeler: true
