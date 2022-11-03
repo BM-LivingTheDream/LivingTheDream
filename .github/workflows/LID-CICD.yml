@@ -146,6 +146,13 @@ jobs:
         name: 'Selenium-Tests'
         path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
+    - name: Bump version and push tag
+      uses: moble/github-tag-action@main
+      # if: github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+
   Integration-Deploy:
     uses: ./.github/workflows/Deploy-Job.yml
     with:
