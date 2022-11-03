@@ -149,7 +149,7 @@ jobs:
   Create-Release:
     runs-on: ubuntu-latest
     needs: [Build-Solution, Build-ARM]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       # write permission is required to create a github release
       contents: write
@@ -169,10 +169,33 @@ jobs:
       with:
         useConfigFile: true
 
+    - name: Download ARM Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      id: arm-download
+      with:
+        # Artifact name
+        name: ARM
+        path: ./Artifacts/ARM
+
+    - name: Download Web Deploy Solution Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: 'Webdeploy-Package'
+        path: ./Artifacts/WebDeploy
+
+    - name: Archive Release
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'Fabrikam-${{ steps.gitversion.outputs.SemVer}}.zip'
+        path: './Artifacts/'
+
     - uses: ncipollo/release-action@v1
       with:
         tag: "${{ steps.gitversion.outputs.SemVer  }}"
         token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: 'Fabrikam-${{ steps.gitversion.outputs.SemVer}}.zip'
 
   Integration-Deploy:
     uses: ./.github/workflows/Deploy-Job.yml
