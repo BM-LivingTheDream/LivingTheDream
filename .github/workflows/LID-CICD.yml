@@ -157,14 +157,14 @@ jobs:
       # otherwise, read permission is required at least
       pull-requests: write
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - name: Bump version and push tag
-      uses: moble/github-tag-action@main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
+    #- uses: actions/checkout@v3
+    #  with:
+    #    fetch-depth: '0'
+    #- name: Bump version and push tag
+    #  uses: moble/github-tag-action@main
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    WITH_V: true
     - uses: release-drafter/release-drafter@v5
       # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
       # with:
