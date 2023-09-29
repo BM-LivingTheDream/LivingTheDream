@@ -303,7 +303,7 @@ jobs:
 
     - name: Remove Azure Resource Group
       run: |
-        az group delete --name ${{ secrets.AzureResourceGroup}} --yes
+        az group delete --name ${{ vars.AzureResourceGroup}} --yes
       shell: pwsh 
 
   Production-Deploy:
