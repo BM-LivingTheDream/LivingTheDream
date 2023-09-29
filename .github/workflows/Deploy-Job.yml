@@ -35,9 +35,9 @@ jobs:
 
     - name: Ensure Azure Resource Group is created
       run: |
-        $rgexists = az group exists -n ${{ secrets.AzureResourceGroup}}
+        $rgexists = az group exists -n ${{vars.AzureResourceGroup}}
         if ($rgexists -eq 'false') {
-          az group create --name ${{ secrets.AzureResourceGroup}} --location ${{ secrets.AZURELOCATION }}
+          az group create --name ${{vars.AzureResourceGroup}} --location ${{ secrets.AZURELOCATION }}
           write-host "Creating Azure Resource Group"
         }
       shell: pwsh 
@@ -48,7 +48,7 @@ jobs:
         scope: 'resourcegroup'
         subscriptionId: ${{ secrets.AZURESUBSCRIPTION }}
         region: ${{ secrets.AZURELOCATION }}
-        resourceGroupName: ${{ secrets.AzureResourceGroup}}
+        resourceGroupName: ${{vars.AzureResourceGroup}}
         template: '.\\ARM\\Templates\\WebSiteSQLDatabase.json' 
         deploymentMode: 'Incremental'
         parameters: 'hostingPlanName="${{ secrets.HostingPlanName}}" hostingPlanSku="${{ secrets.hostingPlanSku}}" hostingPlanCapacity="${{ secrets.hostingPlanCapacity}}" webSiteName="${{ secrets.Sitename}}" sqlserverName="${{ secrets.sqlservername}}" sqlServerAdminLogin="${{ secrets.SQLUser}}" sqlServerAdminPassword="${{ secrets.SQLPassword}}" databaseName="${{ secrets.databasename}}" collation="SQL_Latin1_General_CP1_CI_AS" edition="Standard" maxSizeBytes="1073741824" requestedServiceObjectiveName="S0" appInsightsLocation="${{ secrets.AzureLocation}}" VersionTag="1.2.3"" DeploymentDate="2022-10-28"" EnvironmentTag="tag"'
@@ -70,7 +70,7 @@ jobs:
 
     - name: 'Deploy web site with MSDeploy'
       run: |
-        $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ secrets.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
+        $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ vars.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
         $shortPath = (New-Object -ComObject Scripting.FileSystemObject).GetFolder("./WebDeploy").ShortPath  
         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:auto,ComputerName="https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite)",UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic' -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
       shell: pwsh
