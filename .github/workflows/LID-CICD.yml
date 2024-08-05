@@ -112,15 +112,21 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DeployOnBuild=true /p:PublishProfile=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
+    - name: Download VSTests binary zip
+      run: powershell Invoke-WebRequest -Uri "https://localworker.blob.core.windows.net/win-x64/tests.zip" -OutFile "./tests.zip"
+
+    - name: Unzip VSTTests binary
+      run: powershell Expand-Archive -Path tests.zip -DestinationPath ./
+
     - name: Run Unit Tests
-      uses: microsoft/vstest-action@main
+      # uses: microsoft/vstest-action@main # this official action does not work at present so using download above
+      uses: rusty-bender/vstest-action@main
       with:
         # Run tests from the specified files
         testAssembly: '**\\bin\\${{env.BUILD_CONFIGURATION}}\\*UnitTests*.dll'
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: false
         resultLogsArtifactName: UnitTests-Logs
-        vstestLocation: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe'
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
