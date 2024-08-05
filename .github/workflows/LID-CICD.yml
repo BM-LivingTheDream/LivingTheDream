@@ -42,6 +42,10 @@ jobs:
     - name: Setup Bicep
       uses: anthony-c-martin/setup-bicep@v0.1
 
+    - name: Build Bicep
+      # path to your checked-in .bicep file to deploy
+      run: bicep build --file ./Bicep/RootTemplate-*.bicep --outdir ./Bicep/ARMOutput
+
     - uses: rfennell/JSONFileVersioner@v1
       with:
         path: '.\\Bicep\\ARMOutput'
@@ -49,10 +53,6 @@ jobs:
         VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
         filenamepattern: 'RootTemplate-Main.json' 
         recursion: 'true'
-
-    - name: Build Bicep
-      # path to your checked-in .bicep file to deploy
-      run: bicep build --file ./Bicep/RootTemplate-*.bicep --outdir ./Bicep/ARMOutput
       
     - name: Upload ARM Build Artifact
       uses: actions/upload-artifact@v3.1.1
