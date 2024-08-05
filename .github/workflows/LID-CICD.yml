@@ -39,29 +39,27 @@ jobs:
       with:
         useConfigFile: true
 
+    - name: Setup Bicep
+      uses: anthony-c-martin/setup-bicep@v0.1
+
     - uses: rfennell/JSONFileVersioner@v1
       with:
-        path: '.\\ARM\\FabrikamEnv'
+        path: '.\\Bicep\\ARMOutput'
         field: 'contentVersion'
         VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
-        filenamepattern: 'WebSiteSQLDatabase.json' 
+        filenamepattern: 'RootTemplate-Main.json' 
         recursion: 'true'
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Build ARM Solution
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ./ARM/
+    - name: Build Bicep
+      # path to your checked-in .bicep file to deploy
+      run: bicep build --file ./Bicep/RootTemplate-*.bicep --outdir ./Bicep/ARMOutput
       
     - name: Upload ARM Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
         name: 'ARM'
-        path: '.\\ARM\\FabrikamEnv\\bin\\${{env.BUILD_CONFIGURATION}}'
+        path: '.\\Bicep\\ARMOutput'
 
   Build-Solution:
     runs-on: windows-latest
@@ -140,12 +138,12 @@ jobs:
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-    - name: Upload Selenium Tests Build Artifact
+    - name: Upload UX Tests Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
-        name: 'Selenium-Tests'
-        path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
+        name: 'UX-Tests'
+        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
   Create-Release:
     runs-on: ubuntu-latest
@@ -263,31 +261,35 @@ jobs:
       uses: actions/download-artifact@v3.0.1
       with:
         # Artifact name
-        name: 'Selenium-Tests'
+        name: 'UX-Tests'
         path: ./Tests
+
+    - name: Setup Playwright
+      run: |
+        .\Tests\setup-playwright.ps1
+
+    - name: Copy injectable UX config file
+      run: |
+        Copy-Item "./Test/AppSettings.release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+
     - name: Replace tokens in configuration file
       run: |
-        $file = ".\Tests\FabrikamFiber.Web.SeleniumTests.dll.config"
+        $file = ".\Tests\AppSettings.JSON"
         $filecontent = Get-Content -Path $file
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
-        $filecontent = $filecontent -replace "__webdriver__", "${{secrets.webdriver}}" 
         $filecontent | Out-File $file
         cat $file          
       shell: pwsh        
 
-    - name: Run Integration Selenium UX Tests
-      uses: microsoft/vstest-action@v1.0.0
-      with:
-        # Run tests from the specified files
-        testAssembly: '.\\Tests\\*Tests*.dll'
-        codeCoverageEnabled: false
-        resultLogsArtifactName: SeleniumTests-Logs
-
+    - name: Run Integration UX Tests
+      run: |
+        dotnet test $(Agent.BuildDirectory)/UxTestPackages/FabrikamFiber.Web.UXTests.dll --logger trx
+      
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
       with:
-        trx_files: "**/TestResults/**/*.trx"
+        trx_files: "**/*.trx"
         comment_title: "UX Test Results"
 
   Integration-Tidy:
