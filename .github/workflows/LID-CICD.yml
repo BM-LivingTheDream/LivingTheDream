@@ -48,7 +48,7 @@ jobs:
 
     - name: Build Bicep
       # path to your checked-in .bicep file to deploy
-      run: bicep build .\\Bicep\\RootTemplate-*.bicep --outdir .\\Bicep\\ARMOutput
+      run: bicep build .\\Bicep\\RootTemplate-Main.bicep --outdir .\\Bicep\\ARMOutput
 
     - uses: rfennell/JSONFileVersioner@v1
       with:
@@ -113,7 +113,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DeployOnBuild=true /p:PublishProfile=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Run Unit Tests
-      uses: microsoft-approved-actions/vstest@main
+      uses: microsoft/vstest@main
       with:
         # Run tests from the specified files
         testAssembly: '**\\bin\\${{env.BUILD_CONFIGURATION}}\\*UnitTests*.dll'
@@ -235,7 +235,7 @@ jobs:
       shell: pwsh        
 
     - name: Run Integration API Tests
-      uses: microsoft/vstest-action@v1.0.0
+      uses: microsoft/vstest@main
       with:
         # Run tests from the specified files
         testAssembly: '.\\Tests\\*Tests*.dll'
