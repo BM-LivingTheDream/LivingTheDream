@@ -120,6 +120,7 @@ jobs:
         searchFolder:  ${{env.SOLUTION_FILE_PATH}}
         codeCoverageEnabled: false
         resultLogsArtifactName: UnitTests-Logs
+        vstestLocation: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe'
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
