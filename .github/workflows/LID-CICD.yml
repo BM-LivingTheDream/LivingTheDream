@@ -42,6 +42,10 @@ jobs:
     - name: Setup Bicep
       uses: anthony-c-martin/setup-bicep@v0.1
 
+    - name: Create output directory
+      run: |
+        md .\\Bicep\\ARMOutput
+
     - name: Build Bicep
       # path to your checked-in .bicep file to deploy
       run: bicep build .\\Bicep\\RootTemplate-*.bicep --outdir .\\Bicep\\ARMOutput
