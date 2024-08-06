@@ -265,11 +265,11 @@ jobs:
 
     - name: Copy injectable UX config file
       run: |
-        Copy-Item "./Test/AppSettings.release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+        Copy-Item "./Test/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
 
     - name: Replace tokens in configuration file
       run: |
-        $file = ".\Tests\AppSettings.JSON"
+        $file = ".\Tests\AppSettings.json"
         $filecontent = Get-Content -Path $file
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
         $filecontent | Out-File $file
