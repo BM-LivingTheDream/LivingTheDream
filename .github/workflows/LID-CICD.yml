@@ -265,7 +265,7 @@ jobs:
 
     - name: Copy injectable UX config file
       run: |
-        Copy-Item "./Test/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+        Copy-Item ".\Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
 
     - name: Replace tokens in configuration file
       run: |
