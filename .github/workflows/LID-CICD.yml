@@ -261,7 +261,7 @@ jobs:
 
     - name: Setup Playwright
       run: |
-        .\Tests\setup-playwright.ps1
+        .\Tests\playwright.ps1 install
 
     - name: Copy injectable UX config file
       run: |
