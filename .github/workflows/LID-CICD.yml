@@ -142,7 +142,7 @@ jobs:
       with:
         # Artifact name
         name: 'UX-Tests'
-        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
+        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
 
   Create-Release:
     runs-on: ubuntu-latest
@@ -214,7 +214,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    - name: Download Web Deploy Solution Build Artifact
+    - name: Download Integration Test Artifact
       uses: actions/download-artifact@v3.0.1
       with:
         # Artifact name
@@ -252,7 +252,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    - name: Download Web Deploy Solution Build Artifact
+    - name: Download UX Test Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
         # Artifact name
