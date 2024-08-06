@@ -278,7 +278,7 @@ jobs:
 
     - name: Run Integration UX Tests
       run: |
-        dotnet test $(Agent.BuildDirectory)/UxTestPackages/FabrikamFiber.Web.UXTests.dll --logger trx
+        dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
       
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
