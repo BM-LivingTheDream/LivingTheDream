@@ -242,7 +242,7 @@ jobs:
 
   Integration-UXTests:
     runs-on: windows-latest
-    needs: [Integration-Deploy]
+    needs: [Integration-APITests]
     environment:
       name: Integration
     # permissions needed to allow test tesults to be published 
