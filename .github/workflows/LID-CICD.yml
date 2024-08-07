@@ -236,5 +236,5 @@ jobs:
     with:
       environment: Production
     secrets: inherit
-    needs: [Integration-UXTests,Integration-APITests]
+    needs: [Integration-Tests]
     if: github.ref == 'refs/heads/main'
