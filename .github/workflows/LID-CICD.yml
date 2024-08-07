@@ -203,14 +203,14 @@ jobs:
     needs: [Build-Solution, Build-ARM]
 
   Integration-APITests:
-    uses: ./.github/workflows/IntergrationTests-Job.yml
+    uses: ./.github/workflows/IntegrationTests-Job.yml
     with:
       environment: Integration
     secrets: inherit
     needs: [Integration-Deploy]
   
-  UX-APITests:
-    uses: ./.github/workflows/IntergrationTests-Job.yml
+  Integration-UXTests:
+    uses: ./.github/workflows/UXTests-Job.yml
     with:
       environment: Integration
     secrets: inherit
