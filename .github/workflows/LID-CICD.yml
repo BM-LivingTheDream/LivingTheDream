@@ -203,90 +203,19 @@ jobs:
     needs: [Build-Solution, Build-ARM]
 
   Integration-APITests:
-    runs-on: windows-latest
+    uses: ./.github/workflows/IntergrationTests-Job.yml
+    with:
+      environment: Integration
+    secrets: inherit
     needs: [Integration-Deploy]
-    environment:
-      name: Integration
-    # permissions needed to allow test tesults to be published 
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-    steps:
-    - name: Download Integration Test Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'Integration-Tests'
-        path: ./Tests
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\Tests\FabrikamFiber.Web.IntegrationTests.dll.config"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh        
-
-    - name: Run Integration API Tests
-      run: |
-        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe" ".\\Tests\\*Tests*.dll" --logger:trx --ResultsDirectory:IntegrationTests-Logs --Enablecodecoverage
-
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
-      with:
-        trx_files: "**/IntegrationTests-Logs/**/*.trx"
-        comment_title: "API Test Results"
-
-  Integration-UXTests:
-    runs-on: windows-latest
+  
+  UX-APITests:
+    uses: ./.github/workflows/IntergrationTests-Job.yml
+    with:
+      environment: Integration
+    secrets: inherit
     needs: [Integration-APITests]
-    environment:
-      name: Integration
-    # permissions needed to allow test tesults to be published 
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-    steps:
-    - name: Download UX Test Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'UX-Tests'
-        path: ./Tests
-
-    - name: Setup Playwright
-      run: |
-        .\Tests\playwright.ps1 install
-
-    - name: Copy injectable UX config file
-      run: |
-        Copy-Item ".\Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
-
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\Tests\AppSettings.json"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh        
-
-    - name: Run Integration UX Tests
-      run: |
-        dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
-      
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
-      with:
-        trx_files: "**/*.trx"
-        comment_title: "UX Test Results"
-
+  
   Integration-Tidy:
     runs-on: windows-latest
     needs: [Integration-UXTests,Integration-APITests]

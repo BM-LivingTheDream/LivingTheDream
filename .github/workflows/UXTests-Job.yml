@@ -1,0 +1,56 @@
+name: Reuseable workflow to do integration tests of deployed website
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        
+jobs:
+  Integration-UXTests:
+    runs-on: windows-latest
+    environment:
+      name: ${{ inputs.environment }}
+    # permissions needed to allow test tesults to be published 
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+    steps:
+    - name: Download UX Test Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        # Artifact name
+        name: 'UX-Tests'
+        path: ./Tests
+
+    - name: Setup Playwright
+      run: |
+        .\Tests\playwright.ps1 install
+
+    - name: Copy injectable UX config file
+      run: |
+        Copy-Item ".\Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+
+    - name: Replace tokens in configuration file
+      run: |
+        $file = ".\Tests\AppSettings.json"
+        $filecontent = Get-Content -Path $file
+        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
+        $filecontent | Out-File $file
+        cat $file          
+      shell: pwsh        
+
+    - name: Run Integration UX Tests
+      run: |
+        dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always()
+      with:
+        trx_files: "**/*.trx"
+        comment_title: "UX Test Results"
+
