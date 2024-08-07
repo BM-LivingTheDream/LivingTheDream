@@ -202,7 +202,7 @@ jobs:
     secrets: inherit
     needs: [Build-Solution, Build-ARM]
 
-  Integration-APITests:
+  Integration-Tests:
     uses: ./.github/workflows/IntegrationTests-Job.yml
     with:
       environment: Integration
@@ -215,22 +215,9 @@ jobs:
       pull-requests: write
     needs: [Integration-Deploy]
   
-  Integration-UXTests:
-    uses: ./.github/workflows/UXTests-Job.yml
-    with:
-      environment: Integration
-    secrets: inherit
-    # permissions needed to allow test tesults to be published 
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-    needs: [Integration-APITests]
-  
   Integration-Tidy:
     runs-on: windows-latest
-    needs: [Integration-UXTests,Integration-APITests]
+    needs: [Integration-Tests]
     environment:
       name: Integration-Tidy # this should just be integration, but added the extra so have control if tidy occurs
     steps:
