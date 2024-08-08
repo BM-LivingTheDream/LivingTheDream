@@ -22,6 +22,8 @@ namespace FabrikamFiber.Web.UXTests
 
             await Page.GetByText("Customers").ClickAsync();
 
+            await Page.WaitForTimeoutAsync(5000);
+
             int oldRowCount = await Page.Locator(".dataTable").Locator("tr").CountAsync();
             Console.WriteLine($"Pre-test row count: {oldRowCount}");
 
@@ -33,6 +35,8 @@ namespace FabrikamFiber.Web.UXTests
             await Page.Locator("#Address_State").FillAsync("Countyshire");
             await Page.Locator("#Address_Zip").FillAsync("12345");
             await Page.Locator("input[type='submit'][value='Create']").ClickAsync();
+
+            await Page.WaitForTimeoutAsync(5000);
 
             var newRowCount = await Page.Locator(".dataTable").Locator("tr").CountAsync();
             Console.WriteLine($"Post-test row count: {newRowCount}");
