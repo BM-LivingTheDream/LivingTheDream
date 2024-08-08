@@ -46,7 +46,7 @@ jobs:
         comment_title: "API Test Results"
 
   Integration-UXTests:
-    runs-on: windows-latest
+    runs-on: self-hosted #windows-latest
     environment:
       name: ${{ inputs.environment }}
     # permissions needed to allow test tesults to be published 

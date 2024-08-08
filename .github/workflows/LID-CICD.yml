@@ -40,7 +40,7 @@ jobs:
         useConfigFile: true
 
     - name: Setup Bicep
-      uses: anthony-c-martin/setup-bicep@v0.1
+      uses: anthony-c-martin/setup-bicep@v0.3
 
     - name: Create output directory
       run: |
