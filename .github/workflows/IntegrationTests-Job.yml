@@ -62,14 +62,16 @@ jobs:
         # Artifact name
         name: 'UX-Tests'
         path: ./Tests
-
+        
     - name: Setup Playwright
       run: |
-        .\Tests\playwright.ps1 install
+        ./Tests/playwright.ps1 install
+      shell: pwsh   
 
     - name: Copy injectable UX config file
       run: |
-        Copy-Item ".\Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+        Copy-Item "./Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+      shell: pwsh   
 
     - name: Replace tokens in configuration file
       run: |
@@ -83,7 +85,8 @@ jobs:
     - name: Run Integration UX Tests
       run: |
         dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
-      
+      shell: pwsh   
+        
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
