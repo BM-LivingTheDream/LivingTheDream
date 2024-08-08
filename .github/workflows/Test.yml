@@ -98,12 +98,6 @@ jobs:
         name: 'UX-Tests'
         path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
 
-  Integration-Deploy:
-    uses: ./.github/workflows/Deploy-Job.yml
-    with:
-      environment: Integration
-    secrets: inherit
-    needs: [Build-Solution, Build-ARM]
 
   Integration-Tests:
     uses: ./.github/workflows/IntegrationTests-Job.yml
