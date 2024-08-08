@@ -1,0 +1,31 @@
+name: Living The Dream Tester
+
+on:
+  workflow_dispatch:
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: ./src/
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+permissions:
+  contents: read
+
+jobs:
+
+  Integration-Tests:
+    uses: ./.github/workflows/IntegrationTests-Job.yml
+    with:
+      environment: Integration
+    secrets: inherit
+    # permissions needed to allow test tesults to be published 
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+  
