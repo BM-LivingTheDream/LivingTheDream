@@ -22,12 +22,9 @@ namespace FabrikamFiber.Web.UXTests
 
             await Page.GetByText("Customers").ClickAsync();
 
+            // this is needed when running tests on GHE hosted agents as they are too fast
             await Expect(Page.Locator(".dataTable")).ToBeVisibleAsync();
             
-            // not a great solution, but it works for now
-            // this is needed when running tests on GHE hosted agents as they are too fast
-            // await Page.WaitForTimeoutAsync(1000);
-
             int oldRowCount = await Page.Locator(".dataTable").Locator("tr").CountAsync();
 
             Console.WriteLine($"Pre-test row count: {oldRowCount}");
@@ -41,10 +38,7 @@ namespace FabrikamFiber.Web.UXTests
             await Page.Locator("#Address_Zip").FillAsync("12345");
             await Page.Locator("input[type='submit'][value='Create']").ClickAsync();
 
-            // not a great solution, but it works for now
             // this is needed when running tests on GHE hosted agents as they are too fast
-            // await Page.WaitForTimeoutAsync(1000);
-
             await Expect(Page.Locator(".dataTable")).ToBeVisibleAsync();
             
             var newRowCount = await Page.Locator(".dataTable").Locator("tr").CountAsync();
