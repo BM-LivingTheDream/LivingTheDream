@@ -29,39 +29,41 @@ jobs:
         fetch-depth: '0'
 
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
+      uses: gittools/actions/gitversion/setup@v3.0.0
       with:
         versionSpec: '5.x'
 
     - name: Determine Version
       id:   gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.7
+      uses: gittools/actions/gitversion/execute@v3.0.0
       with:
         useConfigFile: true
 
+    - name: Setup Bicep
+      uses: anthony-c-martin/setup-bicep@v0.3
+
+    - name: Create output directory
+      run: |
+        md .\\Bicep\\ARMOutput
+
+    - name: Build Bicep
+      # path to your checked-in .bicep file to deploy
+      run: bicep build .\\Bicep\\RootTemplate-Main.bicep --outdir .\\Bicep\\ARMOutput
+
     - uses: rfennell/JSONFileVersioner@v1
       with:
-        path: '.\\ARM\\FabrikamEnv'
+        path: '.\\Bicep\\ARMOutput'
         field: 'contentVersion'
         VersionNumber: '${{ steps.gitversion.outputs.assemblySemVer  }}'
-        filenamepattern: 'WebSiteSQLDatabase.json' 
+        filenamepattern: 'RootTemplate-Main.json' 
         recursion: 'true'
-
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Build ARM Solution
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ./ARM/
       
     - name: Upload ARM Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
         name: 'ARM'
-        path: '.\\ARM\\FabrikamEnv\\bin\\${{env.BUILD_CONFIGURATION}}'
+        path: '.\\Bicep\\ARMOutput'
 
   Build-Solution:
     runs-on: windows-latest
@@ -86,13 +88,13 @@ jobs:
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
+      uses: gittools/actions/gitversion/setup@v3.0.0
       with:
         versionSpec: '5.x'
 
     - name: Determine Version
       id:   gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.7
+      uses: gittools/actions/gitversion/execute@v3.0.0
       with:
         useConfigFile: true
 
@@ -111,19 +113,14 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DeployOnBuild=true /p:PublishProfile=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Run Unit Tests
-      uses: microsoft/vstest-action@v1.0.0
-      with:
-        # Run tests from the specified files
-        testAssembly: '**\\bin\\${{env.BUILD_CONFIGURATION}}\\*UnitTests*.dll'
-        searchFolder:  ${{env.SOLUTION_FILE_PATH}}
-        codeCoverageEnabled: false
-        resultLogsArtifactName: UnitTests-Logs
-
+      run: |
+        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe" ".\src\**\bin\${{env.BUILD_CONFIGURATION}}\*UnitTests*.dll" --logger:trx --ResultsDirectory:UnitTests-Logs --Enablecodecoverage
+ 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
       with:
-        trx_files: "**/TestResults/**/*.trx"
+        trx_files: "**/UnitTests-Logs/**/*.trx"
         comment_title: "Unit Test Results"
  
     - name: Upload Web Deploy Build Artifact
@@ -140,12 +137,12 @@ jobs:
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-    - name: Upload Selenium Tests Build Artifact
+    - name: Upload UX Tests Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # Artifact name
-        name: 'Selenium-Tests'
-        path: '.\\src\\FabrikamFiber.Web.SeleniumTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
+        name: 'UX-Tests'
+        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
 
   Create-Release:
     runs-on: ubuntu-latest
@@ -160,13 +157,13 @@ jobs:
         fetch-depth: '0'
 
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
+      uses: gittools/actions/gitversion/setup@v3.0.0
       with:
         versionSpec: '5.x'
 
     - name: Determine Version
       id:   gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.7
+      uses: gittools/actions/gitversion/execute@v3.0.0
       with:
         useConfigFile: true
 
@@ -205,94 +202,22 @@ jobs:
     secrets: inherit
     needs: [Build-Solution, Build-ARM]
 
-  Integration-APITests:
-    runs-on: windows-latest
-    needs: [Integration-Deploy]
-    environment:
-      name: Integration
+  Integration-Tests:
+    uses: ./.github/workflows/IntegrationTests-Job.yml
+    with:
+      environment: Integration
+    secrets: inherit
     # permissions needed to allow test tesults to be published 
     permissions:
       contents: read
       issues: read
       checks: write
       pull-requests: write
-    steps:
-    - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'Integration-Tests'
-        path: ./Tests
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\Tests\FabrikamFiber.Web.IntegrationTests.dll.config"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh        
-
-    - name: Run Integration API Tests
-      uses: microsoft/vstest-action@v1.0.0
-      with:
-        # Run tests from the specified files
-        testAssembly: '.\\Tests\\*Tests*.dll'
-        codeCoverageEnabled: false
-        resultLogsArtifactName: IntegrationTests-Logs
-
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
-      with:
-        trx_files: "**/TestResults/**/*.trx"
-        comment_title: "API Test Results"
-
-  Integration-UXTests:
-    runs-on: windows-latest
     needs: [Integration-Deploy]
-    environment:
-      name: Integration
-    # permissions needed to allow test tesults to be published 
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-    steps:
-    - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
-      with:
-        # Artifact name
-        name: 'Selenium-Tests'
-        path: ./Tests
-    - name: Replace tokens in configuration file
-      run: |
-        $file = ".\Tests\FabrikamFiber.Web.SeleniumTests.dll.config"
-        $filecontent = Get-Content -Path $file
-        $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
-        $filecontent = $filecontent -replace "__webdriver__", "${{secrets.webdriver}}" 
-        $filecontent | Out-File $file
-        cat $file          
-      shell: pwsh        
-
-    - name: Run Integration Selenium UX Tests
-      uses: microsoft/vstest-action@v1.0.0
-      with:
-        # Run tests from the specified files
-        testAssembly: '.\\Tests\\*Tests*.dll'
-        codeCoverageEnabled: false
-        resultLogsArtifactName: SeleniumTests-Logs
-
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
-      with:
-        trx_files: "**/TestResults/**/*.trx"
-        comment_title: "UX Test Results"
-
+  
   Integration-Tidy:
     runs-on: windows-latest
-    needs: [Integration-UXTests,Integration-APITests]
+    needs: [Integration-Tests]
     environment:
       name: Integration-Tidy # this should just be integration, but added the extra so have control if tidy occurs
     steps:
@@ -311,5 +236,5 @@ jobs:
     with:
       environment: Production
     secrets: inherit
-    needs: [Integration-UXTests,Integration-APITests]
+    needs: [Integration-Tests]
     if: github.ref == 'refs/heads/main'

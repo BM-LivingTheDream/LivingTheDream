@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="59a3433b-b697-4281-b178-99b7b26462a9" name="fez@TYPHOON 2024-08-05 15:16:59" runUser="BLACKMARBLE\fez" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2024-08-05T15:16:59.0514066+01:00" queuing="2024-08-05T15:16:59.0514066+01:00" start="2024-08-05T15:16:55.0671081+01:00" finish="2024-08-05T15:16:59.4021662+01:00" />
+  <TestSettings name="default" id="1cbb38b2-b6cb-4287-947b-3d99bfab5209">
+    <Deployment runDeploymentRoot="fez_TYPHOON_2024-08-05_15_16_59" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="732931fe-4b49-4943-874e-b92ab4057cda" testId="c53b4b2d-6d02-0d9c-eb6b-31de0f980da1" testName="CreateInsertsCustomerAndSaves" computerName="TYPHOON" duration="00:00:00.0770073" startTime="2024-08-05T15:16:58.7256873+01:00" endTime="2024-08-05T15:16:58.7984607+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="732931fe-4b49-4943-874e-b92ab4057cda" />
+    <UnitTestResult executionId="dcb3baae-9a55-4085-82cc-c93e276d0255" testId="4a8bcbaf-b2d9-bced-7c28-c6955907ebeb" testName="DeleteFindAndReturnsCustomer" computerName="TYPHOON" duration="00:00:00.0105200" startTime="2024-08-05T15:16:58.7984607+01:00" endTime="2024-08-05T15:16:58.8154267+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dcb3baae-9a55-4085-82cc-c93e276d0255" />
+    <UnitTestResult executionId="95d5a3f6-c592-4e1b-a545-93433ecae35b" testId="b582b595-5c11-3994-59c1-1db537bcbabf" testName="EditUpdatesCustomerAndSaves" computerName="TYPHOON" duration="00:00:00.0010337" startTime="2024-08-05T15:16:58.7984607+01:00" endTime="2024-08-05T15:16:58.7984607+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95d5a3f6-c592-4e1b-a545-93433ecae35b" />
+    <UnitTestResult executionId="d1eed4e5-06a4-4806-aa2f-1999c7ab897c" testId="af80bdd0-05b7-464b-fab4-7ba5e01a468f" testName="ScheduleActionCorrectlyUpdatesRepositories" computerName="TYPHOON" duration="00:00:00.0335958" startTime="2024-08-05T15:16:59.0985568+01:00" endTime="2024-08-05T15:16:59.1343138+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1eed4e5-06a4-4806-aa2f-1999c7ab897c" />
+    <UnitTestResult executionId="f1b210a0-9075-4485-8d5f-ac4f4f170323" testId="1ad85f86-a4ab-01bf-0ad3-858ec15db849" testName="ScheduleActionReturnsValidViewModel" computerName="TYPHOON" duration="00:00:00.2759602" startTime="2024-08-05T15:16:58.8154267+01:00" endTime="2024-08-05T15:16:59.0985568+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1b210a0-9075-4485-8d5f-ac4f4f170323" />
+    <UnitTestResult executionId="ffc1f747-3ca9-44f0-95bf-db4089af8c16" testId="98b3294f-3e6d-cf8e-500e-cc56cf4d111c" testName="DeleteConfirmedDeletesCustomerAndSaves" computerName="TYPHOON" duration="00:00:00.0028669" startTime="2024-08-05T15:16:58.7984607+01:00" endTime="2024-08-05T15:16:58.7984607+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffc1f747-3ca9-44f0-95bf-db4089af8c16" />
+    <UnitTestResult executionId="cbb52747-7ef2-4518-8dac-d45adb2e0c92" testId="8f8998a4-c494-cc9f-a013-c607e775ab25" testName="IndexReturnsNonNullView" computerName="TYPHOON" duration="00:00:00.2507584" startTime="2024-08-05T15:16:58.2148079+01:00" endTime="2024-08-05T15:16:58.7093165+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbb52747-7ef2-4518-8dac-d45adb2e0c92" />
+    <UnitTestResult executionId="d4001131-dba6-4a33-8927-cc29f4e0d4bb" testId="f0a01366-3489-4012-bfe9-f5aa9c4518b8" testName="CreateNullCustomer" computerName="TYPHOON" duration="00:00:00.0026014" startTime="2024-08-05T15:16:58.7984607+01:00" endTime="2024-08-05T15:16:58.7984607+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4001131-dba6-4a33-8927-cc29f4e0d4bb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="CreateInsertsCustomerAndSaves" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="c53b4b2d-6d02-0d9c-eb6b-31de0f980da1">
+      <Execution id="732931fe-4b49-4943-874e-b92ab4057cda" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.CustomersControllerTest" name="CreateInsertsCustomerAndSaves" />
+    </UnitTest>
+    <UnitTest name="IndexReturnsNonNullView" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="8f8998a4-c494-cc9f-a013-c607e775ab25">
+      <Execution id="cbb52747-7ef2-4518-8dac-d45adb2e0c92" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.HomeControllerTest" name="IndexReturnsNonNullView" />
+    </UnitTest>
+    <UnitTest name="DeleteFindAndReturnsCustomer" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="4a8bcbaf-b2d9-bced-7c28-c6955907ebeb">
+      <Execution id="dcb3baae-9a55-4085-82cc-c93e276d0255" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.CustomersControllerTest" name="DeleteFindAndReturnsCustomer" />
+    </UnitTest>
+    <UnitTest name="DeleteConfirmedDeletesCustomerAndSaves" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="98b3294f-3e6d-cf8e-500e-cc56cf4d111c">
+      <Execution id="ffc1f747-3ca9-44f0-95bf-db4089af8c16" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.CustomersControllerTest" name="DeleteConfirmedDeletesCustomerAndSaves" />
+    </UnitTest>
+    <UnitTest name="EditUpdatesCustomerAndSaves" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="b582b595-5c11-3994-59c1-1db537bcbabf">
+      <Execution id="95d5a3f6-c592-4e1b-a545-93433ecae35b" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.CustomersControllerTest" name="EditUpdatesCustomerAndSaves" />
+    </UnitTest>
+    <UnitTest name="ScheduleActionReturnsValidViewModel" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="1ad85f86-a4ab-01bf-0ad3-858ec15db849">
+      <Execution id="f1b210a0-9075-4485-8d5f-ac4f4f170323" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.ServiceTicketsControllerTest" name="ScheduleActionReturnsValidViewModel" />
+    </UnitTest>
+    <UnitTest name="ScheduleActionCorrectlyUpdatesRepositories" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="af80bdd0-05b7-464b-fab4-7ba5e01a468f">
+      <Execution id="d1eed4e5-06a4-4806-aa2f-1999c7ab897c" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.ServiceTicketsControllerTest" name="ScheduleActionCorrectlyUpdatesRepositories" />
+    </UnitTest>
+    <UnitTest name="CreateNullCustomer" storage="c:\projects\github-bm\livingthedream\src\fabrikamfiber.web.unittests\bin\debug\fabrikamfiber.web.unittests.dll" id="f0a01366-3489-4012-bfe9-f5aa9c4518b8">
+      <Execution id="d4001131-dba6-4a33-8927-cc29f4e0d4bb" />
+      <TestMethod codeBase="C:\projects\github-bm\LivingTheDream\src\FabrikamFiber.Web.UnitTests\bin\Debug\FabrikamFiber.Web.UnitTests.dll" adapterTypeName="executor://mstestadapter/v1" className="FabrikamFiber.Web.UnitTests.Controllers.CustomersControllerTest" name="CreateNullCustomer" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c53b4b2d-6d02-0d9c-eb6b-31de0f980da1" executionId="732931fe-4b49-4943-874e-b92ab4057cda" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a8bcbaf-b2d9-bced-7c28-c6955907ebeb" executionId="dcb3baae-9a55-4085-82cc-c93e276d0255" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b582b595-5c11-3994-59c1-1db537bcbabf" executionId="95d5a3f6-c592-4e1b-a545-93433ecae35b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af80bdd0-05b7-464b-fab4-7ba5e01a468f" executionId="d1eed4e5-06a4-4806-aa2f-1999c7ab897c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ad85f86-a4ab-01bf-0ad3-858ec15db849" executionId="f1b210a0-9075-4485-8d5f-ac4f4f170323" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="98b3294f-3e6d-cf8e-500e-cc56cf4d111c" executionId="ffc1f747-3ca9-44f0-95bf-db4089af8c16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8f8998a4-c494-cc9f-a013-c607e775ab25" executionId="cbb52747-7ef2-4518-8dac-d45adb2e0c92" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f0a01366-3489-4012-bfe9-f5aa9c4518b8" executionId="d4001131-dba6-4a33-8927-cc29f4e0d4bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <CollectorDataEntries>
+      <Collector agentName="TYPHOON" uri="datacollector://microsoft/CodeCoverage/2.0" collectorDisplayName="Code Coverage">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="TYPHOON\fez_TYPHOON_2024-08-05.15_16_59.coverage"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>

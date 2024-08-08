@@ -25,7 +25,7 @@ namespace FabrikamFiber.Web.IntegrationTests
             var actual = Helper.ParseJson(data, new[] { new { id = 0, FirstName = "", LastName = "" } });
                
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Count > 10 , "Cannot find customers"); // in exact to allow for condition of UX test adding a customer
+            Assert.IsTrue(actual.Count >= 11);
         }
 
         [TestMethod]
