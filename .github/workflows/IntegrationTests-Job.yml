@@ -88,7 +88,5 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
       with:
-        trx_files: "./TestResults/**/*.trx"
+        trx_files: "**/TestResults/**/*.trx"
         comment_title: "UX Test Results"
-
-      
