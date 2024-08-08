@@ -45,6 +45,8 @@ namespace FabrikamFiber.Web.UXTests
             // this is needed when running tests on GHE hosted agents as they are too fast
             // await Page.WaitForTimeoutAsync(1000);
 
+            await Expect(Page.Locator(".dataTable")).ToBeVisibleAsync();
+            
             var newRowCount = await Page.Locator(".dataTable").Locator("tr").CountAsync();
             Console.WriteLine($"Post-test row count: {newRowCount}");
             
