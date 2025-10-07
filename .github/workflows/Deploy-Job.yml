@@ -14,7 +14,7 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
     - name: Download ARM Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       id: arm-download
       with:
         # Artifact name
@@ -22,7 +22,7 @@ jobs:
         path: ./ARM
 
     - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: 'Webdeploy-Package'
@@ -73,4 +73,5 @@ jobs:
         $publishProfile = az webapp deployment list-publishing-profiles --resource-group ${{ vars.AzureResourceGroup}} --name ${{ secrets.Sitename }} --query "[?publishMethod=='MSDeploy']" --subscription "${{ secrets.AZURESUBSCRIPTION}}" | convertfrom-json
         $shortPath = resolve-path ./webdeploy
         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:package="$shortpath\FabrikamFiber.Web.zip" -setParamFile:"$shortpath\FabrikamFiber.Web.SetParameters.xml" -dest:"auto,ComputerName=https://$($publishProfile.msdeploySite).scm.azurewebsites.net/msdeploy.axd?site=$($publishProfile.msdeploySite),UserName=$($publishProfile.userName),Password=$($publishProfile.userPWD),AuthType='Basic'" -verbose -debug -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
+
       shell: pwsh
