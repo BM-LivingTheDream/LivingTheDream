@@ -62,11 +62,12 @@ jobs:
         # Artifact name
         name: 'UX-Tests'
         path: ./Tests
+        node-version: lts/*
         
-    - name: Setup Playwright
-      run: |
-        ./Tests/playwright.ps1 install
-      shell: pwsh   
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
 
     - name: Copy injectable UX config file
       run: |
@@ -82,14 +83,13 @@ jobs:
         cat $file          
       shell: pwsh        
 
-    - name: Run Integration UX Tests
-      run: |
-        dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
-      shell: pwsh   
+    - name: Run Playwright tests
+      run: npx playwright test  
         
     - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
       with:
-        trx_files: "**/TestResults/**/*.trx"
-        comment_title: "UX Test Results"
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
