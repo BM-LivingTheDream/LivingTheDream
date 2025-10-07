@@ -62,6 +62,8 @@ jobs:
         # Artifact name
         name: 'UX-Tests'
         path: ./Tests
+    - uses: actions/setup-node@v5
+      with:
         node-version: lts/*
     - name: Install Npm
       run: npm install
