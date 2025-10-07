@@ -63,7 +63,8 @@ jobs:
         name: 'UX-Tests'
         path: ./Tests
         node-version: lts/*
-        
+    - name: Install Npm
+      run: npm install@latest
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
