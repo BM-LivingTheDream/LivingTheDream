@@ -64,7 +64,7 @@ jobs:
         path: ./Tests
         node-version: lts/*
     - name: Install Npm
-      run: npm install@latest
+      run: npm install
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
