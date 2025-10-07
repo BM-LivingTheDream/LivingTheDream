@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
     steps:
     - name: Download Integration Test Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: 'Integration-Tests'
@@ -57,7 +57,7 @@ jobs:
       pull-requests: write
     steps:
     - name: Download UX Test Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: 'UX-Tests'
