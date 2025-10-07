@@ -59,7 +59,7 @@ jobs:
         recursion: 'true'
       
     - name: Upload ARM Build Artifact
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'ARM'
@@ -124,21 +124,21 @@ jobs:
         comment_title: "Unit Test Results"
  
     - name: Upload Web Deploy Build Artifact
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'Webdeploy-Package'
         path: '.\\src\\FabrikamFiber.Web\\_publish'
 
     - name: Upload Integration Tests Build Artifact
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
     - name: Upload UX Tests Build Artifact
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'UX-Tests'
