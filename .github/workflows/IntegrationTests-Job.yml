@@ -62,12 +62,26 @@ jobs:
         # Artifact name
         name: 'UX-Tests'
         path: ./Tests
+        
     - name: Setup dotnet
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '8.0.x'
+
+    - name: Update powershell
+      run: dotnet tool update --global PowerShell
+      shell: pwsh
+
+    - name: Install Playwright tool
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+      shell: pwsh
+
+    - name: Install Playwright
+      run: playwright install
+      shell: pwsh
+      
     - name: Ensure browsers are installed
-      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      run: bin/Debug/net8.0/playwright.ps1 install --with-deps
 
     - name: Copy injectable UX config file
       run: |
