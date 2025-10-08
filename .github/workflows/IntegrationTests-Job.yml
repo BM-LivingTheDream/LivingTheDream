@@ -64,7 +64,7 @@ jobs:
         path: ./Tests
     - uses: actions/setup-node@v5
       with:
-        node-version: lts/*
+        node-version: latest
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
