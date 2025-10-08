@@ -56,13 +56,13 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    #- name: Download UX Test Build Artifact
-    #  uses: actions/download-artifact@v4
-    #  with:
-    #    # Artifact name
-    #    name: 'UX-Tests'
-    #    path: ./Tests
-    - uses: actions/checkout@v5   
+    - name: Download UX Test Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        # Artifact name
+        name: 'UX-Tests'
+        path: ./Tests
+    # - uses: actions/checkout@v5   
     - name: Setup dotnet
       uses: actions/setup-dotnet@v5
       with:
@@ -74,6 +74,10 @@ jobs:
 
     - name: Install Playwright tool
       run: dotnet tool install --global Microsoft.Playwright.CLI
+      shell: pwsh
+
+    - name: Enter test directory
+      run: cd ./Tests
       shell: pwsh
 
     - name: Install Playwright
