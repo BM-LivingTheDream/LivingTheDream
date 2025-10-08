@@ -56,13 +56,13 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    - name: Download UX Test Build Artifact
-      uses: actions/download-artifact@v4
-      with:
-        # Artifact name
-        name: 'UX-Tests'
-        path: ./Tests
-        
+    #- name: Download UX Test Build Artifact
+    #  uses: actions/download-artifact@v4
+    #  with:
+    #    # Artifact name
+    #    name: 'UX-Tests'
+    #    path: ./Tests
+    - uses: actions/checkout@v5   
     - name: Setup dotnet
       uses: actions/setup-dotnet@v5
       with:
@@ -82,6 +82,7 @@ jobs:
       
     - name: Ensure browsers are installed
       run: bin/Debug/net8.0/playwright.ps1 install --with-deps
+      shell: pwsh
 
     - name: Copy injectable UX config file
       run: |
