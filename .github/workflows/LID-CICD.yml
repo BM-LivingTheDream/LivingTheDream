@@ -137,12 +137,12 @@ jobs:
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
-    - name: Upload UX Tests Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        # Artifact name
-        name: 'UX-Tests'
-        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
+    #- name: Upload UX Tests Build Artifact
+    #  uses: actions/upload-artifact@v4
+    #  with:
+    #    # Artifact name
+    #    name: 'UX-Tests'
+    #    path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
 
   Create-Release:
     runs-on: ubuntu-latest
