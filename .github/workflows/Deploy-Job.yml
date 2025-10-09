@@ -14,7 +14,7 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
     - name: Download ARM Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       id: arm-download
       with:
         # Artifact name
@@ -22,7 +22,7 @@ jobs:
         path: ./ARM
 
     - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: 'Webdeploy-Package'
