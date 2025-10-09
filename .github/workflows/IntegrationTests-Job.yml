@@ -46,7 +46,7 @@ jobs:
         comment_title: "API Test Results"
 
   Integration-UXTests:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
     # permissions needed to allow test tesults to be published 
@@ -56,18 +56,22 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    - name: Download UX Test Build Artifact
-      uses: actions/download-artifact@v4
+    - name: Checkout project
+      uses: actions/checkout@v5   
+    
+    - uses: actions/setup-node@v5
       with:
-        # Artifact name
-        name: 'UX-Tests'
-        path: ./Tests
+        node-version: lts/*
         
-    - name: Setup Playwright
-      run: |
-        ./Tests/playwright.ps1 install
-      shell: pwsh   
+    - name: Switch to test directory
+      run: cd src/FabrikamFiber.Web.Playwright
 
+    - name: Install dependencies
+      run: npm ci
+         
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    
     - name: Copy injectable UX config file
       run: |
         Copy-Item "./Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
@@ -75,21 +79,19 @@ jobs:
 
     - name: Replace tokens in configuration file
       run: |
-        $file = ".\Tests\AppSettings.json"
+        $file = "./Tests/AppSettings.json"
         $filecontent = Get-Content -Path $file
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
         $filecontent | Out-File $file
         cat $file          
       shell: pwsh        
 
-    - name: Run Integration UX Tests
-      run: |
-        dotnet test ./Tests/FabrikamFiber.Web.UXTests.dll --logger trx
-      shell: pwsh   
-        
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      if: always()
+    - name: Run Playwright tests
+      run: npx playwright test
+      
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
       with:
-        trx_files: "**/TestResults/**/*.trx"
-        comment_title: "UX Test Results"
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
