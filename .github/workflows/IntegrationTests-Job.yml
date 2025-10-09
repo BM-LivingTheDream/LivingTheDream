@@ -56,9 +56,16 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-    - name: Checkout project
-      uses: actions/checkout@v5   
+    # - name: Checkout project
+    #  uses: actions/checkout@v5   
     
+    - name: Download Integration Test Artifact
+      uses: actions/download-artifact@v4
+      with:
+        # Artifact name
+        name: 'UX-Tests'
+        path: ./Tests
+
     - uses: actions/setup-node@v5
       with:
         node-version: lts/*

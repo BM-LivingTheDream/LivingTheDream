@@ -142,8 +142,7 @@ jobs:
       with:
         # Artifact name
         name: 'UX-Tests'
-        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
-
+        path: '.\\src\\FabrikamFiber.Web.Playwright'
   Create-Release:
     runs-on: ubuntu-latest
     needs: [Build-Solution, Build-ARM]
