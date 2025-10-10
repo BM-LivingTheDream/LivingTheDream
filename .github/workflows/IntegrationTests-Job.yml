@@ -80,7 +80,7 @@ jobs:
     
     - name: Copy injectable UX config file
       run: |
-        Copy-Item "./Tests/AppSettings.Release.json" -Destination "./Tests/AppSettings.json" -force -verbose
+        Copy-Item "./Tests/AppSettings.Release.json" -Destination "./Tests/playwright.config.ts" -force -verbose
       shell: pwsh   
 
     - name: Replace tokens in configuration file
