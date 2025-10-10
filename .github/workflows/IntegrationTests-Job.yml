@@ -70,6 +70,7 @@ jobs:
       with:
         node-version: lts/*
         
+
     - name: Install dependencies
       run: |
         cd ${{ github.workspace }}/Tests
@@ -77,15 +78,10 @@ jobs:
          
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    
-    - name: Copy injectable UX config file
-      run: |
-        Copy-Item "./Tests/AppSettings.Release.json" -Destination "./Tests/playwright.config.ts" -force -verbose
-      shell: pwsh   
 
     - name: Replace tokens in configuration file
       run: |
-        $file = "./Tests/AppSettings.json"
+        $file = "./Tests/playwright.config.ts"
         $filecontent = Get-Content -Path $file
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
         $filecontent | Out-File $file
