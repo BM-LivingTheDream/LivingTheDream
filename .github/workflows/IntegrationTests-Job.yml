@@ -74,12 +74,8 @@ jobs:
     - name: Install dependencies
       run: |
         cd ${{ github.workspace }}/Tests
-    
-    - name: Npm CI
-      run: npm ci
-         
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+        npm ci
+        npx playwright install --with-deps
 
     - name: Replace tokens in configuration file
       run: |
