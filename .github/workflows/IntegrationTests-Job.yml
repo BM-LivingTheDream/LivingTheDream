@@ -70,13 +70,6 @@ jobs:
       with:
         node-version: lts/*
         
-
-    - name: Install dependencies
-      run: |
-        cd ${{ github.workspace }}/Tests
-        npm ci
-        npx playwright install --with-deps
-
     - name: Replace tokens in configuration file
       run: |
         $file = "./Tests/playwright.config.ts"
@@ -84,10 +77,14 @@ jobs:
         $filecontent = $filecontent -replace "__weburi__", "${{secrets.weburi}}" 
         $filecontent | Out-File $file
         cat $file          
-      shell: pwsh        
+      shell: pwsh  
 
-    - name: Run Playwright tests
-      run: npx playwright test
+    - name: Install dependencies
+      run: |
+        cd ${{ github.workspace }}/Tests
+        npm ci
+        npx playwright install --with-deps
+        npx playwright test
       
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
