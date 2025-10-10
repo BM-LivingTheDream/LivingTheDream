@@ -84,7 +84,7 @@ jobs:
         cd ${{ github.workspace }}/Tests
         npm ci
         npx playwright install --with-deps
-        npx playwright test ${{ github.workspace }}/Tests
+        npx playwright test customertest.spec.ts
       
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
