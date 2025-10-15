@@ -59,7 +59,7 @@ jobs:
         recursion: 'true'
       
     - name: Upload ARM Build Artifact
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'ARM'
@@ -124,26 +124,25 @@ jobs:
         comment_title: "Unit Test Results"
  
     - name: Upload Web Deploy Build Artifact
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'Webdeploy-Package'
         path: '.\\src\\FabrikamFiber.Web\\_publish'
 
     - name: Upload Integration Tests Build Artifact
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'Integration-Tests'
         path: '.\\src\\FabrikamFiber.Web.IntegrationTests\\bin\\${{env.BUILD_CONFIGURATION}}\'
 
     - name: Upload UX Tests Build Artifact
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v4
       with:
         # Artifact name
         name: 'UX-Tests'
-        path: '.\\src\\FabrikamFiber.Web.UXTests\\bin\\${{env.BUILD_CONFIGURATION}}\\net8.0'
-
+        path: '.\\src\\FabrikamFiber.Web.Playwright'
   Create-Release:
     runs-on: ubuntu-latest
     needs: [Build-Solution, Build-ARM]
@@ -168,7 +167,7 @@ jobs:
         useConfigFile: true
 
     - name: Download ARM Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       id: arm-download
       with:
         # Artifact name
@@ -176,7 +175,7 @@ jobs:
         path: ./Artifacts/ARM
 
     - name: Download Web Deploy Solution Build Artifact
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: 'Webdeploy-Package'
