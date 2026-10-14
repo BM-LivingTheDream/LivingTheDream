@@ -37,7 +37,7 @@ jobs:
       run: |
         $rgexists = az group exists -n ${{vars.AzureResourceGroup}}
         if ($rgexists -eq 'false') {
-          az group create --name ${{vars.AzureResourceGroup}} --location ${{ secrets.AZURELOCATION }}
+          az group create --name ${{vars.AzureResourceGroup}} --location ${{ vars.AZURELOCATION }}
           write-host "Creating Azure Resource Group"
         }
       shell: pwsh 
@@ -47,7 +47,7 @@ jobs:
       with:
         scope: 'resourcegroup'
         subscriptionId: ${{ secrets.AZURESUBSCRIPTION }}
-        region: ${{ secrets.AZURELOCATION }}
+        region: ${{ vars.AZURELOCATION }}
         resourceGroupName: ${{vars.AzureResourceGroup}}
         template: '.\\ARM\\RootTemplate-Main.json' 
         deploymentMode: 'Incremental'
